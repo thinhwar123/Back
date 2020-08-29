@@ -8,6 +8,7 @@ using UnityEngine.Experimental.GlobalIllumination;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("MovementAttribute")]
+
     public Collider2D standColl;
     public Collider2D crouchColl;
     public Rigidbody2D rb;
