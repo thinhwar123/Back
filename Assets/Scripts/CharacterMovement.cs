@@ -55,7 +55,7 @@ public class CharacterMovement : MonoBehaviour
     public float somersaultForce;
 
     [Header("DashAttribute")]
-    public bool canDash;
+    //public bool canDash;
     public bool isDash;
     public float dashForce;
     public float dashTime;
@@ -135,7 +135,7 @@ public class CharacterMovement : MonoBehaviour
     }
     public void CheckStatus()
     {
-        isGround = Physics2D.OverlapBox(feet.position,new Vector2(0.5f, 0.05f), 0, whatIsGround);
+        isGround = Physics2D.OverlapBox(feet.position,new Vector2(0.1f, 0.05f), 0, whatIsGround);
         isWallLeft = Physics2D.OverlapBox(leftHand.position, new Vector2(0.05f, 0.6f), 0, whatIsGround);
         isWallRight = Physics2D.OverlapBox(rightHand.position, new Vector2(0.05f, 0.6f), 0, whatIsGround);
         isWall = (isWallLeft || isWallRight) && !isGround;
@@ -335,9 +335,9 @@ public class CharacterMovement : MonoBehaviour
     }
     public void Dash8() // xem xet viec co nen can bang vector dash ve 1 khi dash ko
     {
-        if (canDash && dashStack !=0 && Input.GetKeyDown(KeyCode.K) && !(isGround && dir.y < 0) && !isRoll && !isTranform && !isHeal && !((isWallLeft && dir.x == -1) || (isWallRight && dir.x == 1)))// co the dash + an nut + dung duoi dat dash xuong duoi + bam tuong dash vao tuong + ko roll
+        if (/*canDash && */dashStack !=0 && Input.GetKeyDown(KeyCode.K) && !(isGround && dir.y < 0) && !isRoll && !isTranform && !isHeal && !((isWallLeft && dir.x == -1) || (isWallRight && dir.x == 1)))// co the dash + an nut + dung duoi dat dash xuong duoi + bam tuong dash vao tuong + ko roll
         {
-            canDash = false;
+            //canDash = false;
             isDash = true;
             isJumping = false;
 
@@ -368,7 +368,7 @@ public class CharacterMovement : MonoBehaviour
             }
             else
             {
-                canDash = true;
+                //canDash = true;
                 isDash = false;
 
                 canSomersault = tempCanSomersault;
@@ -426,15 +426,15 @@ public class CharacterMovement : MonoBehaviour
             }            
             if (isWall || isGround)
             {
-                canDash = true;
+                ////canDash = true;
             }
         }
     }
     public void Dash2()// xem xet viec dash 2 huong
     {
-        if (canDash && dashStack != 0 && Input.GetKeyDown(KeyCode.K) && !isRoll && !isTranform && !isHeal && !((isWallLeft && dir.x == -1) || (isWallRight && dir.x == 1)))// co the dash + an nut + dung duoi dat dash xuong duoi + bam tuong dash vao tuong + ko roll
+        if (/*canDash && */dashStack != 0 && Input.GetKeyDown(KeyCode.K) && !isRoll && !isTranform && !isHeal && !((isWallLeft && dir.x == -1) || (isWallRight && dir.x == 1)))// co the dash + an nut + dung duoi dat dash xuong duoi + bam tuong dash vao tuong + ko roll
         {
-            canDash = false;
+            //canDash = false;
             isDash = true;
             isJumping = false;
 
@@ -464,7 +464,7 @@ public class CharacterMovement : MonoBehaviour
             }
             else
             {
-                canDash = true;
+                //canDash = true;
                 isDash = false;
 
                 canSomersault = tempCanSomersault;
@@ -512,7 +512,7 @@ public class CharacterMovement : MonoBehaviour
             }
             if (isWall || isGround)
             {
-                canDash = true;
+                //canDash = true;
             }
         }
     }
