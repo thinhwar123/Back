@@ -18,6 +18,7 @@ public class Gem : MonoBehaviour
     public float accelerator;
     public float speedRotate;
     public float safeRange;
+    public GameObject explosionObject;
 
     public void Start()
     {
@@ -63,5 +64,10 @@ public class Gem : MonoBehaviour
             gemLight.active = false;
         }
     }
-
+    public void Explosion()
+    {
+        GameObject tempObject = Instantiate(explosionObject, transform.position, Quaternion.identity);
+        tempObject.GetComponent<Animator>().SetTrigger("fire");
+        Destroy(tempObject, 2);
+    }
 }

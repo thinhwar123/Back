@@ -16,6 +16,13 @@ public class CharacterEffect : MonoBehaviour
     public float timeDashFade;
     public float dashFadeValue;
 
+    [Header("SpecialDash")]
+    public GameObject specialDashEffect;
+    public float timeSpecialDashSpawnStart;
+    public float timeSpecialDashSpawnCounter;
+    public float timeSpecialDashFade;
+    public float specialDashFadeValue;
+
     [Header("Roll")]
     public GameObject rollEffect;
     public float timeRollSpawnStart;
@@ -56,7 +63,7 @@ public class CharacterEffect : MonoBehaviour
         }
 
     }
-    public IEnumerator DashEffect(float dashTime)
+    public IEnumerator DashEffect()
     {
         timeDashSpawnCounter = 0.05f;
         while (characterMovement.isDash)
@@ -79,7 +86,31 @@ public class CharacterEffect : MonoBehaviour
 
 
             yield return new WaitForEndOfFrame();
-            dashTime -= Time.deltaTime;
+        }
+    }
+    public IEnumerator SpecialDashEffect()
+    {
+        timeSpecialDashSpawnCounter = 0.05f;
+        while (characterMovement.isSpecialDash)
+        {
+
+            if (timeSpecialDashSpawnCounter < 0)
+            {
+                timeSpecialDashSpawnCounter = timeSpecialDashSpawnStart;
+                //spwan echo
+                GameObject tempObject = Instantiate(specialDashEffect, transform.position , Quaternion.identity);
+                tempObject.GetComponent<SpriteRenderer>().sprite = this.GetComponent<SpriteRenderer>().sprite;
+                tempObject.GetComponent<SpriteRenderer>().flipX = this.GetComponent<SpriteRenderer>().flipX;
+                tempObject.GetComponent<SpriteRenderer>().DOFade(specialDashFadeValue, timeSpecialDashFade);
+                Destroy(tempObject, timeSpecialDashFade + 0.1f);
+            }
+            else
+            {
+                timeSpecialDashSpawnCounter -= Time.deltaTime;
+            }
+
+
+            yield return new WaitForEndOfFrame();
         }
     }
     public IEnumerator RollEffect(float rollTime)
@@ -108,9 +139,20 @@ public class CharacterEffect : MonoBehaviour
             rollTime -= Time.deltaTime;
         }
     }
-    public void ChangeFormEffect()
+    public void TranformEffect()
     {
         changeFormAni.GetComponent<SpriteRenderer>().flipX = characterMovement.spriteRenderer.flipX;
-        changeFormAni.SetTrigger("changeForm");
+        changeFormAni.SetBool("isLight", characterMovement.isLight);
+        changeFormAni.SetTrigger("normalTranform");
+    }
+    public void QuickTranformEffect()
+    {
+        changeFormAni.GetComponent<SpriteRenderer>().flipX = characterMovement.spriteRenderer.flipX;
+        changeFormAni.SetBool("isLight", characterMovement.isLight);
+        changeFormAni.SetTrigger("quickTranform");
+    }
+    public void EndNormalTranform()
+    {
+        characterMovement.EndTranform();
     }
 }
