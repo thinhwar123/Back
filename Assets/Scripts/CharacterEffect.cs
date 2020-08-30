@@ -7,6 +7,7 @@ public class CharacterEffect : MonoBehaviour
     public CharacterMovement characterMovement;
     [Header("Jump")]
     public ParticleSystem jumpEffect;
+    public ParticleSystem healingEffect;
 
     [Header("Dash")]
     public GameObject dashEffect;
@@ -22,17 +23,8 @@ public class CharacterEffect : MonoBehaviour
     public float timeRollFade;
     public float rollFadeValue;
 
-    public void quickFlip()
-    {
-        if (characterMovement.isWallLeft)
-        {
-            characterMovement.spriteRenderer.flipX = false;
-        }
-        else if (characterMovement.isWallRight)
-        {
-            characterMovement.spriteRenderer.flipX = true;
-        }
-    }
+    [Header("ChangeForm")]
+    public Animator changeFormAni;
     public void fixDirectionSlide()
     {
         if (characterMovement.isWallLeft)
@@ -51,6 +43,18 @@ public class CharacterEffect : MonoBehaviour
     public void JumpEffect()
     {
         jumpEffect.Play();
+    }
+    public void HealingEffect(bool check)
+    {
+        if (check)
+        {
+            healingEffect.Play();
+        }
+        else
+        {
+            healingEffect.Stop();
+        }
+
     }
     public IEnumerator DashEffect(float dashTime)
     {
@@ -103,5 +107,10 @@ public class CharacterEffect : MonoBehaviour
             yield return new WaitForEndOfFrame();
             rollTime -= Time.deltaTime;
         }
+    }
+    public void ChangeFormEffect()
+    {
+        changeFormAni.GetComponent<SpriteRenderer>().flipX = characterMovement.spriteRenderer.flipX;
+        changeFormAni.SetTrigger("changeForm");
     }
 }
