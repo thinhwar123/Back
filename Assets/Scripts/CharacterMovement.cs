@@ -1,4 +1,5 @@
 ﻿using Cinemachine.Editor;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Animations;
@@ -16,6 +17,7 @@ public class CharacterMovement : MonoBehaviour
     public Transform leftHand;
     public Transform rightHand;
     public Transform feet;
+    public Transform bodyCharacter;
     public Gem gemObject;
     public Transform gemPoint;
     public Vector2 gemPointPosition;
@@ -27,6 +29,7 @@ public class CharacterMovement : MonoBehaviour
     public bool isWall;
     public bool isGround;
     public bool isInTheAir;
+    public bool isInGround;
 
 
     [Header("RunAttribute")]
@@ -92,6 +95,7 @@ public class CharacterMovement : MonoBehaviour
     public float timeSwitchObjectCounter;
     public GameObject tempCrossHair;
     public GameObject tempSpecialObject;
+    public GameObject specialObjectControll;
     public GameObject crossHair;
 
     [Header("AttackAttribute")]
@@ -177,11 +181,25 @@ public class CharacterMovement : MonoBehaviour
     {
         if (!isInSpecialDash)
         {
-            isGround = Physics2D.OverlapBox(feet.position, new Vector2(0.1f, 0.05f), 0, whatIsGround);
+            isGround = Physics2D.OverlapBox(feet.position, new Vector2(0.1f, 0.1f), 0, whatIsGround);
             isWallLeft = Physics2D.OverlapBox(leftHand.position, new Vector2(0.05f, 0.6f), 0, whatIsGround);
             isWallRight = Physics2D.OverlapBox(rightHand.position, new Vector2(0.05f, 0.6f), 0, whatIsGround);
             isWall = (isWallLeft || isWallRight) && !isGround;
             isInTheAir = !isWall && !isGround;
+            isInGround = Physics2D.OverlapCircle(bodyCharacter.position, 0.24f,whatIsGround);
+            if (isInGround)
+            {
+                transform.position += Vector3.up;
+            }
+            if (isGround && dir.y <= 0 && !isJumping && !isInSpecialDash)
+            {
+                rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+                transform.position = new Vector3(transform.position.x, (float)Math.Floor(transform.position.y) + 0.51f, 0);
+            }
+            else
+            {
+                rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            }
 
             //ani
             ani.SetBool("isGround", isGround);
@@ -196,7 +214,7 @@ public class CharacterMovement : MonoBehaviour
     public void Flip()
     {
         bool tempFlipX = spriteRenderer.flipX;
-        if (!isWall && !isAim)
+        if (!isWall )
         {
             if (rb.velocity.x > 0)
             {
@@ -211,7 +229,7 @@ public class CharacterMovement : MonoBehaviour
                 spriteRenderer.flipX = tempFlipX;
             }
         }
-        else if(isWall && !isAim)
+        else if(isWall )
         {
             if (isWallLeft && rb.velocity.y < 0)
             {
@@ -226,21 +244,21 @@ public class CharacterMovement : MonoBehaviour
                 spriteRenderer.flipX = tempFlipX;
             }
         }
-        else if (isAim)
-        {
-            if (dir.x > 0)
-            {
-                spriteRenderer.flipX = false;
-            }
-            else if (dir.x < 0)
-            {
-                spriteRenderer.flipX = true;
-            }
-            else
-            {
-                spriteRenderer.flipX = tempFlipX;
-            }
-        }
+        //else if (isAim)
+        //{
+        //    if (dir.x > 0)
+        //    {
+        //        spriteRenderer.flipX = false;
+        //    }
+        //    else if (dir.x < 0)
+        //    {
+        //        spriteRenderer.flipX = true;
+        //    }
+        //    else
+        //    {
+        //        spriteRenderer.flipX = tempFlipX;
+        //    }
+        //}
         FixGemPointPosition();
     }
     public void Run()
@@ -278,6 +296,8 @@ public class CharacterMovement : MonoBehaviour
             rb.gravityScale = normalGravity;
             isJumping = true;
             jumpTimeCounter = jumpTime;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
 
             rb.velocity = new Vector2(rb.velocity.x, 0);
             rb.velocity = Vector2.up * jumpForce;
@@ -578,9 +598,10 @@ public class CharacterMovement : MonoBehaviour
     }
     public void SpecialDash()
     {
-        if (Input.GetKeyDown(KeyCode.N) && isGround && dir == Vector2.zero && !isInSpecialDash)                                                 // target
+        if (Input.GetKeyDown(KeyCode.N) && ((isGround && dir == Vector2.zero && !isInSpecialDash) || (isJoin) ))                                                 // target vao vat the gan nhat
         {
             isInSpecialDash = true;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             isAim = true;
             indexListObject = 0;
             listObject = Physics2D.CircleCastAll((Vector2)transform.position, specialDashRange, Vector2.zero, 0, whatIsSpecialObject);
@@ -588,24 +609,64 @@ public class CharacterMovement : MonoBehaviour
             {
                 canSpecialDash = true;
                 tempSpecialObject = listObject[indexListObject].transform.gameObject;
-                tempCrossHair = Instantiate(crossHair, listObject[indexListObject].transform.position, Quaternion.identity);
+                Debug.Log(listObject.Length);
+                if (isJoin)
+                {
+
+                    if (tempSpecialObject == specialObjectControll && listObject.Length > 1)
+                    {
+                        tempSpecialObject = listObject[1].transform.gameObject;
+                        Debug.Log("thay doi object" + listObject[1].transform.gameObject.name);
+                    }
+                }
+                for (int i = 0; i < listObject.Length; i++)
+                {
+                    if (listObject[i].transform.gameObject != specialObjectControll)
+                    {
+                        Debug.Log("vat the dc xet" + listObject[i].transform.gameObject.name);
+                        if ((tempSpecialObject.transform.position - transform.position).magnitude > (listObject[i].transform.position - transform.position).magnitude)
+                        {
+                            tempSpecialObject = listObject[i].transform.gameObject;
+                        }
+                    }
+                }
+                if (isJoin)
+                {
+                    if (tempSpecialObject != specialObjectControll)
+                    {
+                        tempCrossHair = Instantiate(crossHair, tempSpecialObject.transform.position, Quaternion.identity);
+                    }
+                    else
+                    {
+                        canSpecialDash = false;
+                    }
+                }
+                else
+                {
+                    tempCrossHair = Instantiate(crossHair, tempSpecialObject.transform.position, Quaternion.identity);
+                }
+
+                
             }
         }
-        if (isAim && listObject.Length > 1 && dir.x != 0 && timeSwitchObjectCounter < 0)                                                                                     // doi vat the (nen xem xet co can thiet hay ko);
-        {
-            timeSwitchObjectCounter = timeSwitchObject;
-            indexListObject = (listObject.Length + (int)dir.x + indexListObject) % listObject.Length;
-            tempSpecialObject = listObject[indexListObject].transform.gameObject;
-            tempCrossHair.transform.position = tempSpecialObject.transform.position;
-        }
-        else if(isAim)
-        {
-            timeSwitchObjectCounter -= Time.deltaTime;
-        }
+        //if (isAim && listObject.Length > 1 && dir.x != 0 && timeSwitchObjectCounter < 0)                                                                                     // doi vat the (nen xem xet co can thiet hay ko);
+        //{
+        //    timeSwitchObjectCounter = timeSwitchObject;
+        //    indexListObject = (listObject.Length + (int)dir.x + indexListObject) % listObject.Length;
+        //    tempSpecialObject = listObject[indexListObject].transform.gameObject;
+        //    tempCrossHair.transform.position = tempSpecialObject.transform.position;
+        //}
+        //else if(isAim)
+        //{
+        //    timeSwitchObjectCounter -= Time.deltaTime;
+        //}
         if (Input.GetKeyUp(KeyCode.N) && isInSpecialDash && isAim)                                                                                  // bo target
         {
-            isInSpecialDash = false;
-            listObject = new RaycastHit2D[0];
+            if (!isJoin)
+            {
+                isInSpecialDash = false;
+                listObject = new RaycastHit2D[0];
+            }
             if (canSpecialDash)
             {
                 tempCrossHair.GetComponent<CrossHair>().DestroyAim();
@@ -615,12 +676,15 @@ public class CharacterMovement : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.M) && canSpecialDash)                                                                                      // dash vao
         {
+            gameObject.transform.SetParent(null);
+            
             isAim = false;
             canSpecialDash = false;
             //lao toi vat the va nhap vao do 
             
             isSpecialDash = true;
             rb.gravityScale = 0;
+
             characterCollider.isTrigger = true;
             //ani
             ani.SetTrigger("dash");
@@ -638,7 +702,8 @@ public class CharacterMovement : MonoBehaviour
             isSpecialDash = false;
             isJoin = true;
             spriteRenderer.color = Color.clear;
-            gameObject.transform.SetParent(tempSpecialObject.transform);
+            specialObjectControll = tempSpecialObject;
+            gameObject.transform.SetParent(specialObjectControll.transform);
             tempCrossHair.GetComponent<CrossHair>().DestroyAim();
             
         }
@@ -651,9 +716,11 @@ public class CharacterMovement : MonoBehaviour
 
             spriteRenderer.color = Color.white;
             gameObject.transform.SetParent(null);
-            tempSpecialObject.GetComponent<SpecialObject>().Explosion();                                                            // pha huy object
+            specialObjectControll.GetComponent<SpecialObject>().Explosion();                                                            // pha huy object
+
             tempCrossHair = null;
             tempSpecialObject = null;
+            specialObjectControll = null;
             if (dir != Vector2.zero)
             {
                                                                                                          // su dung tham so cua dash de khien nhan vat dash ra ngoai

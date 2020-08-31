@@ -735,9 +735,17 @@
       <Project>{A3B6A899-B194-E03D-2CC0-B19FD90618B0}</Project>
       <Name>Assembly-CSharp-firstpass</Name>
     </ProjectReference>
+    <ProjectReference Include="Unity.2D.Tilemap.Extras.Editor.csproj">
+      <Project>{4A7CA0CC-7581-6D26-D8E7-0A41144A03D3}</Project>
+      <Name>Unity.2D.Tilemap.Extras.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.2D.PixelPerfect.Samples.Editor.csproj">
       <Project>{62A2CE27-949E-0BB4-7A0E-96E2EE446B04}</Project>
       <Name>Unity.2D.PixelPerfect.Samples.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.2D.Tilemap.Extras.csproj">
+      <Project>{6590962C-4359-5E72-347D-8D82487B323A}</Project>
+      <Name>Unity.2D.Tilemap.Extras</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.2D.PixelPerfect.Samples.csproj">
       <Project>{84D2E19E-1B52-ACC1-E372-8CC4AA8D9A76}</Project>
