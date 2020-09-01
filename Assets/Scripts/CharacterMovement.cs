@@ -718,7 +718,6 @@ public class CharacterMovement : MonoBehaviour
             //thoat ra khoi do
         }
     }
-
     public void Aim()
     {
         if (Input.GetKeyDown(KeyCode.N) )
@@ -964,13 +963,28 @@ public class CharacterMovement : MonoBehaviour
             isAttack = true;
             attackTimeCounter = attatckTime;
             //ani
-            if (isInTheAir && dir.y < 0)
+            if (isInTheAir && dir.y > 0)
             {
-                ani.SetTrigger("attackUp");
+                if (spriteRenderer.flipX)
+                {
+                    ani.SetTrigger("attackDown");
+                }
+                else
+                {
+                    ani.SetTrigger("attackUp");
+                }
+                
             }
-            else if (dir.y > 0 && dir.x == 0)
+            else if (dir.y < 0 && dir.x == 0)
             {
-                ani.SetTrigger("attackDown");
+                if (spriteRenderer.flipX)
+                {
+                    ani.SetTrigger("attackUp");
+                }
+                else
+                {
+                    ani.SetTrigger("attackDown");
+                }
             }
             else if (true)
             {
