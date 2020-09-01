@@ -119,7 +119,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ani: {fileID: 2731048145874718933}
-  coll: {fileID: 8665999565352484436}
+  specialObjectColl: {fileID: 8665999565352484436}
+  crossHair: {fileID: 1939240716766224840, guid: d50845d3dd1ee8747881c45d6da11861,
+    type: 3}
+  tempCrossHair: {fileID: 0}
 --- !u!95 &2731048145874718933
 Animator:
   serializedVersion: 3

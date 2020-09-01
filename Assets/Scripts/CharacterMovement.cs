@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using UnityEditor.Animations;
 using UnityEngine;
 
@@ -30,7 +31,6 @@ public class CharacterMovement : MonoBehaviour
     public bool isGround;
     public bool isInTheAir;
     public bool isInGround;
-
 
     [Header("RunAttribute")]
     public float runSpeed;
@@ -84,12 +84,16 @@ public class CharacterMovement : MonoBehaviour
     [Header("SpecialDashAttribute")]
     public bool isInSpecialDash;
     public bool isAim;
+    public bool isAimRun;
     public bool canSpecialDash;
     public bool isSpecialDash;
     public bool isJoin;
+    public bool canFindObjectWhileRun;
+    public bool delayTimeFind;
     public float specialDashForce;
     public float specialDashRange;
     public RaycastHit2D[] listObject;
+    public List<GameObject> listSpecialObject;
     public int indexListObject;
     public float timeSwitchObject; 
     public float timeSwitchObjectCounter;
@@ -171,7 +175,10 @@ public class CharacterMovement : MonoBehaviour
         Skill();
         Heal();
 
+        Aim();
         SpecialDash();
+        OutSpecialDash();
+
         GemLightSwitch();
         NormalTranform();
         QuickTranform();
@@ -179,54 +186,39 @@ public class CharacterMovement : MonoBehaviour
     }
     public void CheckStatus()
     {
-        if (!isInSpecialDash)
+        if (!isJoin)
         {
             isGround = Physics2D.OverlapBox(feet.position, new Vector2(0.1f, 0.1f), 0, whatIsGround);
             isWallLeft = Physics2D.OverlapBox(leftHand.position, new Vector2(0.05f, 0.6f), 0, whatIsGround);
             isWallRight = Physics2D.OverlapBox(rightHand.position, new Vector2(0.05f, 0.6f), 0, whatIsGround);
             isWall = (isWallLeft || isWallRight) && !isGround;
             isInTheAir = !isWall && !isGround;
-            isInGround = Physics2D.OverlapCircle(bodyCharacter.position, 0.24f,whatIsGround);
+            isInGround = Physics2D.OverlapCircle(bodyCharacter.position, 0.1f, whatIsGround);
             if (isInGround)
             {
                 transform.position += Vector3.up;
             }
-            if (isGround && dir.y <= 0 && !isJumping && !isInSpecialDash)
-            {
-                rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
-                transform.position = new Vector3(transform.position.x, (float)Math.Floor(transform.position.y) + 0.51f, 0);
-            }
-            else
-            {
-                rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-            }
-
             //ani
             ani.SetBool("isGround", isGround);
             ani.SetBool("isWall", isWall);
             ani.SetBool("isInTheAir", isInTheAir);
             ani.SetFloat("velocity.x", rb.velocity.x);
             ani.SetFloat("velocity.y", rb.velocity.y);
+
         }
-
-
     }
     public void Flip()
     {
         bool tempFlipX = spriteRenderer.flipX;
         if (!isWall )
         {
-            if (rb.velocity.x > 0)
+            if (dir.x > 0)
             {
                 spriteRenderer.flipX = false;
             }
-            else if (rb.velocity.x < 0)
+            else if (dir.x < 0)
             {
                 spriteRenderer.flipX = true;
-            }
-            else
-            {
-                spriteRenderer.flipX = tempFlipX;
             }
         }
         else if(isWall )
@@ -239,31 +231,12 @@ public class CharacterMovement : MonoBehaviour
             {
                 spriteRenderer.flipX = true;
             }
-            else
-            {
-                spriteRenderer.flipX = tempFlipX;
-            }
         }
-        //else if (isAim)
-        //{
-        //    if (dir.x > 0)
-        //    {
-        //        spriteRenderer.flipX = false;
-        //    }
-        //    else if (dir.x < 0)
-        //    {
-        //        spriteRenderer.flipX = true;
-        //    }
-        //    else
-        //    {
-        //        spriteRenderer.flipX = tempFlipX;
-        //    }
-        //}
         FixGemPointPosition();
     }
     public void Run()
     {
-        if (!isWallJump && !isDash && !isRoll && !isTranform && !isHeal && !isInSpecialDash)
+        if (!isWallJump && !isDash && !isRoll && !isTranform && !isHeal && !isJoin)
         {
             if (isWallLeft && dir.x < 0 && !isGround)
             {
@@ -296,7 +269,6 @@ public class CharacterMovement : MonoBehaviour
             rb.gravityScale = normalGravity;
             isJumping = true;
             jumpTimeCounter = jumpTime;
-            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
 
 
             rb.velocity = new Vector2(rb.velocity.x, 0);
@@ -415,7 +387,7 @@ public class CharacterMovement : MonoBehaviour
     }
     public void Dash8() // xem xet viec co nen can bang vector dash ve 1 khi dash ko
     {
-        if (/*canDash && */dashStack !=0 && Input.GetKeyDown(KeyCode.K) && !(isGround && dir.y < 0) && !isRoll && !isTranform && !isHeal && !isInSpecialDash && !((isWallLeft && dir.x == -1) || (isWallRight && dir.x == 1)))// co the dash + an nut + dung duoi dat dash xuong duoi + bam tuong dash vao tuong + ko roll
+        if (/*canDash && */!isDash && dashStack !=0 && Input.GetKey(KeyCode.K) && !(isGround && dir.y < 0) && !isRoll && !isTranform && !isHeal && !isInSpecialDash && !((isWallLeft && dir.x == -1) || (isWallRight && dir.x == 1)))// co the dash + an nut + dung duoi dat dash xuong duoi + bam tuong dash vao tuong + ko roll
         {
             //canDash = false;
             isDash = true;
@@ -512,7 +484,7 @@ public class CharacterMovement : MonoBehaviour
     }
     public void Dash2()// xem xet viec dash 2 huong
     {
-        if (/*canDash && */dashStack != 0 && Input.GetKeyDown(KeyCode.K) && !isRoll && !isTranform && !isHeal && !isInSpecialDash &&  !((isWallLeft && dir.x == -1) || (isWallRight && dir.x == 1)))// co the dash + an nut + dung duoi dat dash xuong duoi + bam tuong dash vao tuong + ko roll
+        if (/*canDash && */!isDash && dashStack != 0 && Input.GetKey(KeyCode.K) && !isRoll && !isTranform && !isHeal && !isInSpecialDash &&  !((isWallLeft && dir.x == -1) || (isWallRight && dir.x == 1)))// co the dash + an nut + dung duoi dat dash xuong duoi + bam tuong dash vao tuong + ko roll
         {
             //canDash = false;
             isDash = true;
@@ -596,12 +568,11 @@ public class CharacterMovement : MonoBehaviour
             }
         }
     }
-    public void SpecialDash()
+    public void SpecialDash1()
     {
         if (Input.GetKeyDown(KeyCode.N) && ((isGround && dir == Vector2.zero && !isInSpecialDash) || (isJoin) ))                                                 // target vao vat the gan nhat
         {
             isInSpecialDash = true;
-            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             isAim = true;
             indexListObject = 0;
             listObject = Physics2D.CircleCastAll((Vector2)transform.position, specialDashRange, Vector2.zero, 0, whatIsSpecialObject);
@@ -747,6 +718,203 @@ public class CharacterMovement : MonoBehaviour
             //thoat ra khoi do
         }
     }
+
+    public void Aim()
+    {
+        if (Input.GetKeyDown(KeyCode.N) )
+        {
+            isAim = true;
+            isInSpecialDash = true;
+
+            StartCoroutine(FindSpecialObjectAround(false,0.5f));
+        }
+        else if (isAim && ((spriteRenderer.flipX && dir.x < 0) || (!spriteRenderer.flipX && dir.x > 0)))
+        {
+            isAimRun = true;
+            StartCoroutine(FindSpecialObjectAround(true,0.5f));
+        }
+        else if (isAim && isAimRun && dir.x == 0)
+        {
+            isAimRun = false;
+            StartCoroutine(FindSpecialObjectAround(false,0.5f));
+        }
+        if (Input.GetKeyUp(KeyCode.N) && isAim)
+        {
+            isAim = false;
+            canSpecialDash = false;
+            if (!isJoin)
+            {
+                isInSpecialDash = false;
+            }
+
+
+            if (tempSpecialObject != null)
+            {
+                tempSpecialObject.GetComponent<SpecialObject>().StopTarget();
+            }
+        }
+    }
+    public void SpecialDash()
+    {
+        if (Input.GetKeyDown(KeyCode.M) && isAim && canSpecialDash)
+        {
+            gameObject.transform.SetParent(null);
+
+            isAim = false;
+            canSpecialDash = false;
+            if (isJoin)
+            {
+                //spriteRenderer.color = Color.white;
+                specialObjectControll.GetComponent<SpecialObject>().BeFree();
+            }
+
+            isSpecialDash = true;
+            rb.gravityScale = 0;
+
+            characterCollider.isTrigger = true;
+            //ani
+            ani.SetTrigger("dash");
+            StartCoroutine(characterEffect.SpecialDashEffect());
+        }
+        if (isSpecialDash && (transform.position - tempSpecialObject.transform.position).magnitude > 0.5f)
+        {
+            rb.velocity = (tempSpecialObject.transform.position - transform.position).normalized * specialDashForce;
+
+        }
+        else if (isSpecialDash) // nhap vao
+        {
+            ani.SetTrigger("endDash");
+            rb.velocity = Vector2.zero;
+            isSpecialDash = false;
+            isJoin = true;
+            spriteRenderer.color = Color.clear;
+
+            specialObjectControll = tempSpecialObject;
+            specialObjectControll.GetComponent<SpecialObject>().BeControlled();
+            gameObject.transform.SetParent(specialObjectControll.transform);
+        }
+    }
+    public void OutSpecialDash()
+    {
+        if (Input.GetKeyDown(KeyCode.M) && isJoin && !Input.GetKey(KeyCode.N))
+        {
+            isJoin = false;
+            isInSpecialDash = false;
+            listSpecialObject = new List<GameObject>();
+            characterCollider.isTrigger = false;
+
+            spriteRenderer.color = Color.white;
+            gameObject.transform.SetParent(null);                                                    // pha huy object
+            specialObjectControll.GetComponent<SpecialObject>().BeFree();
+            tempSpecialObject = null;
+            specialObjectControll = null;
+            if (dir != Vector2.zero)
+            {
+                // su dung tham so cua dash de khien nhan vat dash ra ngoai
+                isDash = true;
+                isJumping = false;
+
+                tempCanSomersault = canSomersault;
+                canSomersault = false;
+                rb.gravityScale = 0;
+
+                dashTimeCounter = dashTime;
+
+                rb.velocity = dir.normalized * dashForce;
+
+                //ani
+                ani.SetTrigger("dash");
+                StartCoroutine(characterEffect.DashEffect());
+                // ket thuc tham so dash (nen xem lai dash de hieu tai sao)
+            }
+            else
+            {
+                rb.gravityScale = normalGravity;
+            }
+            //thoat ra khoi do
+        }
+    }
+    public IEnumerator FindSpecialObjectAround(bool isWait ,float delayTime)
+    {
+
+        if (canFindObjectWhileRun || !isWait)
+        {
+
+            if (isWait)
+            {
+                canFindObjectWhileRun = false;
+            }
+            if (tempSpecialObject != null)
+            {
+                tempSpecialObject.GetComponent<SpecialObject>().StopTarget();
+            }
+            canSpecialDash = false;
+            listSpecialObject = new List<GameObject>();
+            Vector2 lastVector2 = Vector2.down;
+            int fixVector2 = spriteRenderer.flipX ? 1 : -1;
+            for (int i = 0; i < 180; i += 2)
+            {
+                Debug.DrawRay(transform.position, (lastVector2 + new Vector2(lastVector2.y, -lastVector2.x) *(float)Math.Tan(Math.PI / 90)).normalized * specialDashRange, Color.red,1);
+                RaycastHit2D tempHit = Physics2D.Raycast(transform.position, (lastVector2 + new Vector2(lastVector2.y, -lastVector2.x) * (float)Math.Tan(Math.PI / 90)).normalized, specialDashRange, whatIsSpecialObject);
+                if (tempHit)
+                {
+                    if (!listSpecialObject.Exists(x => x.name ==  tempHit.transform.gameObject.name))
+                    {
+                        if (tempHit.transform.gameObject.layer == 11)
+                        {
+                            Debug.Log(tempHit.transform.gameObject.name);
+                            listSpecialObject.Add(tempHit.transform.gameObject);
+                        }
+                    }
+
+                }
+                lastVector2 = (lastVector2 + new Vector2(lastVector2.y, -lastVector2.x) * (float)Math.Tan(Math.PI / 90) * fixVector2).normalized;
+            }
+            if (listSpecialObject.Count == 0)
+            {
+                for (int i = 180; i < 360; i += 2)
+                {
+                    Debug.DrawRay(transform.position, (lastVector2 + new Vector2(lastVector2.y, -lastVector2.x) * (float)Math.Tan(Math.PI / 90)).normalized * specialDashRange, Color.red, 1);
+                    RaycastHit2D tempHit = Physics2D.Raycast(transform.position, (lastVector2 + new Vector2(lastVector2.y, -lastVector2.x) * (float)Math.Tan(Math.PI / 90)).normalized, specialDashRange, whatIsSpecialObject);
+                    if (tempHit)
+                    {
+                        if (!listSpecialObject.Exists(x => x.name == tempHit.transform.gameObject.name))
+                        {
+                            if (tempHit.transform.gameObject.layer == 11)
+                            {
+                                Debug.Log(tempHit.transform.gameObject.name);
+                                listSpecialObject.Add(tempHit.transform.gameObject);
+                            }
+                        }
+
+                    }
+                    lastVector2 = (lastVector2 + new Vector2(lastVector2.y, -lastVector2.x) * (float)Math.Tan(Math.PI / 90) * fixVector2).normalized;
+                }
+            }
+
+            if (listSpecialObject.Count != 0)
+            {
+                //Debug.Log(listSpecialObject[0].name);
+                tempSpecialObject = listSpecialObject[0];
+                for (int i = 1; i < listSpecialObject.Count; i++)
+                {
+                    if ((tempSpecialObject.transform.position - transform.position).magnitude > (listSpecialObject[i].transform.position - transform.position).magnitude)
+                    {
+                        //Debug.Log(listSpecialObject[0].name);
+                        tempSpecialObject = listSpecialObject[i];
+                    }
+                }
+                canSpecialDash = true;
+                tempSpecialObject.GetComponent<SpecialObject>().StartTarget();
+            }
+            if (isWait)
+            {
+                yield return new WaitForSeconds(delayTime);
+                canFindObjectWhileRun = true;
+            }
+
+        }
+    }
     public void Roll()
     {
         if (canRoll && isGround && Input.GetKeyDown(KeyCode.L) && !isDash && !isTranform && !isHeal && !isInSpecialDash && !(isWallLeft && dir.x == -1) && !(isWallRight && dir.x == 1) && !(isWallLeft && spriteRenderer.flipX) && !(isWallRight && !spriteRenderer.flipX))
@@ -796,8 +964,19 @@ public class CharacterMovement : MonoBehaviour
             isAttack = true;
             attackTimeCounter = attatckTime;
             //ani
-
-            ani.SetTrigger("attack");
+            if (isInTheAir && dir.y < 0)
+            {
+                ani.SetTrigger("attackUp");
+            }
+            else if (dir.y > 0 && dir.x == 0)
+            {
+                ani.SetTrigger("attackDown");
+            }
+            else if (true)
+            {
+                ani.SetTrigger("attack");
+            }
+            
         }
         else if (attackTimeCounter >= 0)
         {
