@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 public class Gem : MonoBehaviour
 {
-    public GameObject mainCharacter;
+    public GameObject gemPoint;
     public SpriteRenderer sprite;
     public Rigidbody2D rb;
     public bool isLightUp;
@@ -22,7 +22,6 @@ public class Gem : MonoBehaviour
 
     public void Start()
     {
-        
     }
     public void Update()
     {
@@ -37,7 +36,7 @@ public class Gem : MonoBehaviour
     }
     public void GemMovement()
     {
-        Vector2 directionMove = (mainCharacter.transform.position - transform.position);
+        Vector2 directionMove = (gemPoint.transform.position - transform.position);
         
         if (directionMove.magnitude > safeRange)
         {
@@ -57,11 +56,11 @@ public class Gem : MonoBehaviour
     {
         if (isLightUp )
         {
-            gemLight.active = true;
+            gemLight.SetActive(true);
         }
         else if(!isLightUp )
         {
-            gemLight.active = false;
+            gemLight.SetActive(false);
         }
     }
     public void Explosion()

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - SpecialObject
+  - Room
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - Player
   - OnewayPlatform
   - SpecialObject
-  - 
+  - Room
   - 
   - 
   - 

@@ -69,8 +69,10 @@
     <Compile Include="Assets\Scripts\CharacterMovement.cs" />
     <Compile Include="Assets\Scripts\ControllerInputSetting.cs" />
     <Compile Include="Assets\Scripts\CrossHair.cs" />
+    <Compile Include="Assets\Scripts\FIxBugGround.cs" />
+    <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Gem.cs" />
-    <Compile Include="Assets\Scripts\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\Room.cs" />
     <Compile Include="Assets\Scripts\SpecialObject.cs" />
     <None Include="Assets\Sprites\AssetPack\ReadMe.txt" />
     <Reference Include="UnityEngine">
