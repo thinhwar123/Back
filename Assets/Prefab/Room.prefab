@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 2372632982954974492}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 43.449356, y: 26, z: 1}
+  m_LocalScale: {x: 59.209877, y: 36, z: 1}
   m_Children: []
   m_Father: {fileID: 2372632984708828322}
   m_RootOrder: 1
@@ -102,8 +102,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb4b27487873f2345a5b04708877593d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  key: 0
   cinemachineVirtualCamera: {fileID: 2372632984350216889}
   cinemachineConfiner: {fileID: 2372632984350216891}
+  cameraColl: {fileID: 2372632982954974492}
+  roomColl: {fileID: 2372632984395696032}
+  isTest: 0
   isDebug: 1
   isDrawAll: 0
   isDrawRoom: 1
@@ -111,10 +115,7 @@ MonoBehaviour:
   lockRight: 0
   lockUp: 0
   lockDown: 0
-  cameraColl: {fileID: 2372632982954974492}
-  roomColl: {fileID: 2372632984395696032}
-  followOffset: {x: 3.89, y: 3}
-  localPosition: {x: 0, y: 0}
+  roomRangeOffset: {x: 20, y: 12}
 --- !u!1 &2372632984350216889
 GameObject:
   m_ObjectHideFlags: 0
@@ -170,7 +171,7 @@ MonoBehaviour:
   m_Follow: {fileID: 0}
   m_Lens:
     FieldOfView: 40
-    OrthographicSize: 8
+    OrthographicSize: 6
     NearClipPlane: 1
     FarClipPlane: 100
     Dutch: 0
@@ -210,6 +211,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2372632984395696033}
   - component: {fileID: 2372632984395696034}
+  - component: {fileID: 2573642401546828420}
   m_Layer: 12
   m_Name: RoomColl
   m_TagString: Room
@@ -226,7 +228,7 @@ Transform:
   m_GameObject: {fileID: 2372632984395696032}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 17.834679, y: 10, z: 1}
+  m_LocalScale: {x: 40, y: 24, z: 1}
   m_Children: []
   m_Father: {fileID: 2372632983650232128}
   m_RootOrder: 1
@@ -257,6 +259,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &2573642401546828420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2372632984395696032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50f85839788ba4243b74b46f2a9f6de9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  room: {fileID: 2372632983650232129}
 --- !u!1 &2372632984708828321
 GameObject:
   m_ObjectHideFlags: 0
@@ -332,20 +347,20 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 2372632982954974495}
     m_ColliderPaths:
-    - - X: 217246491
-        Y: -50000000
-      - X: 217246491
-        Y: 130000000
-      - X: -217246784
-        Y: 129999707
-      - X: -217246491
-        Y: -50000000
+    - - X: 296049083
+        Y: -180000000
+      - X: 296049083
+        Y: 180000000
+      - X: -296049376
+        Y: 179999707
+      - X: -296049083
+        Y: -180000000
   m_CompositePaths:
     m_Paths:
-    - - {x: 21.724619, y: -5}
-      - {x: 21.724619, y: 13}
-      - {x: -21.724678, y: 12.999942}
-      - {x: -21.724619, y: -5}
+    - - {x: 29.604881, y: -18}
+      - {x: 29.604881, y: 18}
+      - {x: -29.604939, y: 17.99994}
+      - {x: -29.604881, y: -18}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005
 --- !u!1 &4764338961176706246
@@ -404,11 +419,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ad980451443d70438faac0bc6c235a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_LookaheadTime: 0.206
+  m_LookaheadTime: 0
   m_LookaheadSmoothing: 3
   m_LookaheadIgnoreY: 1
-  m_XDamping: 1
-  m_YDamping: 1
+  m_XDamping: 0
+  m_YDamping: 0
   m_ZDamping: 1
   m_ScreenX: 0.5
   m_ScreenY: 0.5

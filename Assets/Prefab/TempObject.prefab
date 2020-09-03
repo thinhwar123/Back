@@ -93,7 +93,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4841978329912494421}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -119,6 +119,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ani: {fileID: 2731048145874718933}
+  rb: {fileID: 4841978329912494422}
+  isAim: 0
   specialObjectColl: {fileID: 8665999565352484436}
   crossHair: {fileID: 1939240716766224840, guid: d50845d3dd1ee8747881c45d6da11861,
     type: 3}

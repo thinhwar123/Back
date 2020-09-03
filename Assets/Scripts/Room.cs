@@ -1,4 +1,5 @@
 ﻿using Cinemachine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,8 @@ public class Room : MonoBehaviour
 {
     public GameObject cinemachineVirtualCamera;
     public Cinemachine.CinemachineConfiner cinemachineConfiner;
+    public GameObject cameraColl;
+    public GameObject roomColl;
     public bool isDebug;
     public bool isDrawAll;
     public bool isDrawRoom;
@@ -17,10 +20,8 @@ public class Room : MonoBehaviour
     public bool lockDown;
     private Vector2 fixPosition;
     private Vector2 fixRange;
-    public GameObject cameraColl;
-    public GameObject roomColl;
-    public Vector2 followOffset;
-    public Vector2 localPosition;
+
+    public Vector2 roomRangeOffset;
 
 
     private Vector3 roomPosition;
@@ -28,6 +29,8 @@ public class Room : MonoBehaviour
 
     private Vector3 cameraStatPosition;
     private Vector3 cameraMoveRange;
+
+    private Vector3 staticCameraPosition;
     public void Start()
     {
         
@@ -35,57 +38,43 @@ public class Room : MonoBehaviour
     }
     public void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.Alpha1))
-        //{
-        //    cameraColl.transform.position = cameraStatPosition;
-        //    cameraColl.transform.localScale = cameraMoveRange;
 
-        //    roomColl.transform.position = roomPosition;
-        //    roomColl.transform.localScale = roomRange;
-
-        //}
     }
     public void FixCollider()
     {
         if (!isDebug)
         {
-            Vector2 border = calculateThershold();
+            Vector2 borderRoom = roomRangeOffset;
             Vector2 borderCamera = calculateCamera();
 
             //ve room
             roomPosition = transform.position;
-            roomRange = new Vector3(border.x * 2, border.y * 2, 1);
+            roomRange = new Vector3(roomRangeOffset.x * 2, roomRangeOffset.y * 2, 1);
 
-            //ve camera
-            localPosition = Vector2.zero;
-            if (lockLeft || lockRight)
-            {
-                if (lockLeft)
-                {
-                    localPosition.x = followOffset.x;
-                }
-                else
-                {
-                    localPosition.x = -followOffset.x;
-                }
-            }
-            if (lockUp || lockDown)
-            {
-                if (lockDown)
-                {
-                    localPosition.y = followOffset.y;
-                }
-                else
-                {
-                    localPosition.y = -followOffset.y;
-                }
-            }
-
-            //ve vung di chuyen cua camera
+            // fix vi tri va do lon
             fixPosition = (lockRight ? Vector2.zero : Vector2.right) + (lockLeft ? Vector2.zero : Vector2.left) + (lockUp ? Vector2.zero : Vector2.up) + (lockDown ? Vector2.zero : Vector2.down);
             fixRange = (lockRight ? Vector2.zero : Vector2.right) + (lockLeft ? Vector2.zero : Vector2.right) + (lockUp ? Vector2.zero : Vector2.up) + (lockDown ? Vector2.zero : Vector2.up);
-            cameraStatPosition = transform.position + new Vector3((fixPosition.x * border.x + localPosition.x) / 2, (fixPosition.y * border.y + localPosition.y) / 2);
-            cameraMoveRange = new Vector3(borderCamera.x * fixRange.x + border.x * 2, borderCamera.y * fixRange.y + border.y * 2, 1);
+
+            //ve camera
+            staticCameraPosition = new Vector3(fixPosition.x * (borderCamera.x - roomRangeOffset.x), fixPosition.y * (borderCamera.y - roomRangeOffset.y), 1);
+
+            //ve vung di chuyen cua camera
+            cameraStatPosition = transform.position + new Vector3(fixPosition.x * (borderCamera.x / 2), fixPosition.y * (borderCamera.y / 2));
+
+            cameraMoveRange = new Vector3(borderCamera.x * fixRange.x + roomRangeOffset.x * 2, borderCamera.y * fixRange.y + roomRangeOffset.y * 2, 1);
+
+            if (cameraMoveRange.x < borderCamera.x * 2)
+            {
+                cameraMoveRange.x = borderCamera.x * 2;
+                cameraStatPosition.x = transform.position.x + staticCameraPosition.x;
+            }
+            if (cameraMoveRange.y < borderCamera.y * 2)
+            {
+                cameraMoveRange.y = borderCamera.y * 2;
+                cameraStatPosition.y = transform.position.y + staticCameraPosition.y;
+            }
+
+
 
 
             cameraColl.transform.position = cameraStatPosition;
@@ -97,12 +86,17 @@ public class Room : MonoBehaviour
     }
     public void StartCamera()
     {
-        cinemachineVirtualCamera.SetActive(true);
         cinemachineVirtualCamera.GetComponent<CinemachineVirtualCamera>().Follow = GameManager.instance.character.transform;
+        cinemachineVirtualCamera.SetActive(true);        
     }
     public void StopCamera()
     {
         cinemachineVirtualCamera.SetActive(false);
+    }
+    public IEnumerator DelayStopCamera()
+    {
+        yield return new WaitForSeconds(1.25f);
+
     }
     public Vector3 calculateCamera()
     {
@@ -110,71 +104,50 @@ public class Room : MonoBehaviour
         Vector2 temp = new Vector2(Camera.main.orthographicSize * aspet.width / aspet.height, Camera.main.orthographicSize);
         return temp;
     }
-    public Vector3 calculateThershold()
+    public void FixTranform()
     {
-        Rect aspet = Camera.main.pixelRect;
-        Vector2 temp = new Vector2(Camera.main.orthographicSize * aspet.width / aspet.height, Camera.main.orthographicSize);
-        temp.x -= followOffset.x;
-        temp.y -= followOffset.y;
-        return temp;
+
     }
+
     public void OnDrawGizmos()
     {
-        if (isDebug)
+        if (isDebug )
         {
             Gizmos.color = Color.red;
 
 
-            Vector2 border = calculateThershold();
+            Vector2 borderRoom = roomRangeOffset;
             Vector2 borderCamera = calculateCamera();
 
             //ve room
             roomPosition = transform.position;
-            roomRange = new Vector3(border.x * 2, border.y * 2, 1);
+            roomRange = new Vector3(roomRangeOffset.x * 2, roomRangeOffset.y * 2, 1);
 
-            //ve camera
-            localPosition = Vector2.zero;
-            if (lockLeft || lockRight)
-            {
-                if (lockLeft)
-                {
-                    localPosition.x = followOffset.x;
-                }
-                else
-                {
-                    localPosition.x = -followOffset.x;
-                }
-            }
-            if (lockUp || lockDown)
-            {
-                if (lockDown)
-                {
-                    localPosition.y = followOffset.y;
-                }
-                else
-                {
-                    localPosition.y = -followOffset.y;
-                }
-            }
-
-            //ve vung di chuyen cua camera
+            // fix vi tri va do lon
             fixPosition = (lockRight ? Vector2.zero : Vector2.right) + (lockLeft ? Vector2.zero : Vector2.left) + (lockUp ? Vector2.zero : Vector2.up) + (lockDown ? Vector2.zero : Vector2.down);
             fixRange = (lockRight ? Vector2.zero : Vector2.right) + (lockLeft ? Vector2.zero : Vector2.right) + (lockUp ? Vector2.zero : Vector2.up) + (lockDown ? Vector2.zero : Vector2.up);
 
-            cameraStatPosition = transform.position + new Vector3((fixPosition.x * border.x + localPosition.x) / 2, (fixPosition.y * border.y + localPosition.y) / 2);
+            //ve camera
+            staticCameraPosition = new Vector3(fixPosition.x * (borderCamera.x - roomRangeOffset.x), fixPosition.y * (borderCamera.y - roomRangeOffset.y), 1);
 
-            cameraMoveRange = new Vector3(borderCamera.x * fixRange.x + border.x * 2, borderCamera.y * fixRange.y + border.y * 2, 1);
+            //ve vung di chuyen cua camera
+            cameraStatPosition = transform.position + new Vector3(fixPosition.x *( borderCamera.x / 2), fixPosition.y  * (borderCamera.y / 2));
+
+            cameraMoveRange = new Vector3(borderCamera.x * fixRange.x + roomRangeOffset.x * 2, borderCamera.y * fixRange.y + roomRangeOffset.y * 2, 1);
 
             if (cameraMoveRange.x < borderCamera.x * 2)
             {
                 cameraMoveRange.x = borderCamera.x * 2;
-                cameraStatPosition.x = transform.position.x + (-fixPosition.x * border.x + borderCamera.x * fixPosition.x);
+                cameraStatPosition.x = transform.position.x + staticCameraPosition.x;
             }
             if (cameraMoveRange.y < borderCamera.y * 2)
             {
                 cameraMoveRange.y = borderCamera.y * 2;
-                cameraStatPosition.y = transform.position.y + (-fixPosition.y * border.y + borderCamera.y * fixPosition.y);
+                cameraStatPosition.y = transform.position.y + staticCameraPosition.y;
             }
+
+
+
 
             cameraColl.transform.position = cameraStatPosition;
             cameraColl.transform.localScale = cameraMoveRange;
@@ -184,18 +157,19 @@ public class Room : MonoBehaviour
 
 
 
-            //cinemachineConfiner.InvalidatePathCache();
+            cinemachineConfiner.InvalidatePathCache();
 
             if (isDrawAll)
             {
-                Gizmos.DrawWireCube(transform.position, new Vector3(border.x * 2, border.y * 2, 1));                                                // ve room
-                Gizmos.DrawWireCube(transform.position + (Vector3)localPosition, new Vector3(borderCamera.x * 2, borderCamera.y * 2, 1));           // ve camera
+                Gizmos.DrawWireCube(transform.position, new Vector3(roomRangeOffset.x * 2, roomRangeOffset.y * 2, 1));                                                // ve room
+                Gizmos.DrawWireCube(transform.position + staticCameraPosition, new Vector3(borderCamera.x * 2, borderCamera.y * 2, 1));           // ve camera
                 Gizmos.DrawWireCube(cameraStatPosition, cameraMoveRange);                                                                           // ve vung camera
             }
             else if (isDrawRoom)
             {
-                Gizmos.DrawWireCube(transform.position, new Vector3(border.x * 2, border.y * 2, 1));                                                // ve room
+                Gizmos.DrawWireCube(transform.position, new Vector3(roomRangeOffset.x * 2, roomRangeOffset.y * 2, 1));                                                // ve room
             }
+            
         }
         
     }

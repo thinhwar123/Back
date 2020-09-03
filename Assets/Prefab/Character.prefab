@@ -125,7 +125,7 @@ MonoBehaviour:
   dashFadeValue: 0
   specialDashEffect: {fileID: 6799370770862848659, guid: 543164eddceb69445a7ef0a85c91b4f2,
     type: 3}
-  timeSpecialDashSpawnStart: 0.02
+  timeSpecialDashSpawnStart: 0.01
   timeSpecialDashSpawnCounter: 0
   timeSpecialDashFade: 2
   specialDashFadeValue: 0
@@ -10140,6 +10140,7 @@ MonoBehaviour:
   tempCrossHair: {fileID: 1939240716766224840, guid: d50845d3dd1ee8747881c45d6da11861,
     type: 3}
   tempSpecialObject: {fileID: 0}
+  specialObjectAim: {fileID: 0}
   specialObjectControll: {fileID: 0}
   crossHair: {fileID: 1939240716766224840, guid: d50845d3dd1ee8747881c45d6da11861,
     type: 3}

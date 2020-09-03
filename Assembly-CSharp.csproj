@@ -69,12 +69,16 @@
     <Compile Include="Assets\Scripts\CharacterMovement.cs" />
     <Compile Include="Assets\Scripts\ControllerInputSetting.cs" />
     <Compile Include="Assets\Scripts\CrossHair.cs" />
+    <Compile Include="Assets\Scripts\Enemy.cs" />
     <Compile Include="Assets\Scripts\FIxBugGround.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Gem.cs" />
     <Compile Include="Assets\Scripts\Room.cs" />
+    <Compile Include="Assets\Scripts\RoomCheckController.cs" />
+    <Compile Include="Assets\Scripts\SimplePool.cs" />
+    <Compile Include="Assets\Scripts\SpawnGameObject.cs" />
     <Compile Include="Assets\Scripts\SpecialObject.cs" />
-    <None Include="Assets\Sprites\AssetPack\ReadMe.txt" />
+    <None Include="Assets\Sprites\Character\AssetPack\ReadMe.txt" />
     <Reference Include="UnityEngine">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.7f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
