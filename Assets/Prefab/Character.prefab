@@ -5108,6 +5108,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6609313501839714213}
   - component: {fileID: 6609313501839714212}
+  - component: {fileID: 8578367538339330601}
   m_Layer: 0
   m_Name: Coll
   m_TagString: Player
@@ -5145,6 +5146,32 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.72, y: 1}
   m_Direction: 0
+--- !u!61 &8578367538339330601
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6609313501839714234}
+  m_Enabled: 0
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.5, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &6609313502096264017
 GameObject:
   m_ObjectHideFlags: 0
@@ -10062,6 +10089,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51a54f2e985712a449680e7d242ec17d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDebug: 0
   characterEffect: {fileID: 6609313500852736245}
   characterCollider: {fileID: 6609313501839714212}
   rb: {fileID: 6609313502736312382}
@@ -10076,7 +10104,7 @@ MonoBehaviour:
   gemPointPosition: {x: 1.5, y: 1}
   whatIsGround:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 8448
   whatIsSpecialObject:
     serializedVersion: 2
     m_Bits: 2304
@@ -10104,11 +10132,13 @@ MonoBehaviour:
   isWallJump: 0
   wallJumpDirection: {x: 1, y: 2}
   wallJumpForce: 15
-  wallJumpTime: 0.3
+  wallJumpTime: 0.2
   wallJumpTimeCounter: -0.018959302
+  continueJump: 0
   canSomersault: 1
   isSomersault: 0
   somersaultForce: 15
+  canDash: 0
   isDash: 0
   dashForce: 20
   dashTime: 0.2
@@ -10118,6 +10148,8 @@ MonoBehaviour:
   dashStack: 3
   dashCountdown: 1
   dashCountdownTime: 0
+  dashCountdownCanDash: 1
+  dashCountdownCanDashTime: 0
   canRoll: 0
   isRoll: 0
   rollForce: 12
@@ -10164,10 +10196,10 @@ MonoBehaviour:
   isTranform: 0
   canNormalTranform: 0
   normalTranformCountdown: 1
-  normalTranformCountdownTime: 1
+  normalTranformCountdownTime: 0
   canQuickTranform: 0
   quickTranformCountdown: 0.2
-  quickTranformCountdownTime: 0.2
+  quickTranformCountdownTime: 0
 --- !u!1 &6609313502898162012
 GameObject:
   m_ObjectHideFlags: 0
@@ -10223,7 +10255,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.1, y: 0.1}
+  m_Size: {x: 0.6, y: 0.1}
   m_EdgeRadius: 0
 --- !u!1 &6609313502905032942
 GameObject:
