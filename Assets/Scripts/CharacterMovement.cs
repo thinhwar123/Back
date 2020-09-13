@@ -8,6 +8,7 @@ using UnityEngine;
 public class CharacterMovement : MonoBehaviour
 {
     [Header("CharacterAttribute")]
+    public bool isDebug;
     public CharacterEffect characterEffect;
     public Collider2D characterCollider;
     public Rigidbody2D rb;
@@ -57,6 +58,7 @@ public class CharacterMovement : MonoBehaviour
     public float wallJumpForce;
     public float wallJumpTime;
     public float wallJumpTimeCounter;
+    public bool continueJump;
 
     [Header("SomersaultAttribute")]
     public bool canSomersault;
@@ -64,6 +66,7 @@ public class CharacterMovement : MonoBehaviour
     public float somersaultForce;
 
     [Header("DashAttribute")]
+    public bool canDash;
     public bool isDash;
     public float dashForce;
     public float dashTime;
@@ -74,6 +77,8 @@ public class CharacterMovement : MonoBehaviour
     public int dashStack;
     public float dashCountdown;
     public float dashCountdownTime;
+    public float dashCountdownCanDash;
+    public float dashCountdownCanDashTime;
 
     [Header("RollAttribute")]
     public bool canRoll;
@@ -156,29 +161,32 @@ public class CharacterMovement : MonoBehaviour
         dir = new Vector2(xIndex, yIndex);
         CheckStatus();//check trang thai nhan vat
 
-        DashCountdown();
+        DashCountdownStack();
+        DashCountdownCanDash();
         TranformCountdown();
         Attack();
         Flip();
-        if (isLight)
+        Skill();
+        WallSlide();
+        if (isLight || isDebug)
         {
             Jump();
-            WallJump();
+            WallJump1();
             Somersault();
             Heal();
             Roll();
         }
-        else
+        if(!isLight || isDebug)
         {
             Dash8();
             Aim();
             SpecialDash();
             OutSpecialDash();
         }
-        WallSlide();
+
         Run();
         //Dash2();
-        Skill();
+
         GemLightSwitch();
         NormalTranform();
         QuickTranform();
@@ -188,7 +196,7 @@ public class CharacterMovement : MonoBehaviour
     {
         if (!isJoin)
         {
-            isGround = Physics2D.OverlapBox(feet.position, new Vector2(0.1f, 0.1f), 0, whatIsGround);
+            isGround = Physics2D.OverlapBox(feet.position, new Vector2(0.6f, 0.1f), 0, whatIsGround);
             isWallLeft = Physics2D.OverlapBox(leftHand.position, new Vector2(0.05f, 0.6f), 0, whatIsGround);
             isWallRight = Physics2D.OverlapBox(rightHand.position, new Vector2(0.05f, 0.6f), 0, whatIsGround);
             isWall = (isWallLeft || isWallRight) && !isGround;
@@ -359,6 +367,46 @@ public class CharacterMovement : MonoBehaviour
         }
 
     }
+    public void WallJump1()
+    {
+        if (isWall && Input.GetKeyDown(KeyCode.J) && !isWallJump)
+        {
+            isWallJump = true;
+            continueJump = true;
+            wallJumpTimeCounter = wallJumpTime;
+            rb.gravityScale = normalGravity;
+            Vector2 fixDirection = new Vector2(wallJumpDirection.x * (isWallLeft ? 1 : -1), wallJumpDirection.y);
+            rb.velocity = fixDirection.normalized * wallJumpForce;
+
+            //ani
+            //ani.SetBool("isWallJump", true);
+            ani.SetTrigger("wallJump");
+            characterEffect.JumpEffect();
+
+        }
+        else if (wallJumpTimeCounter >= 0)
+        {
+            wallJumpTimeCounter -= Time.deltaTime;
+        }
+        else if (wallJumpTimeCounter < 0)
+        {
+            isWallJump = false;
+        }
+        if (continueJump && isInTheAir && dir.x != 0  && !isWallJump)
+        {
+            continueJump = false;
+            isSomersault = true;
+            canSomersault = false;
+
+            rb.velocity = new Vector2(rb.velocity.x, 0);
+            rb.velocity = Vector2.up * somersaultForce;
+
+            //ani
+            //ani.SetBool("isSomersault", true);
+            ani.SetTrigger("somersault");
+            //characterEffect.JumpEffect();
+        }
+    }
     public void Somersault()
     {
         if ((isGround || isWall) && !isDash)
@@ -387,9 +435,9 @@ public class CharacterMovement : MonoBehaviour
     }
     public void Dash8() // xem xet viec co nen can bang vector dash ve 1 khi dash ko
     {
-        if (/*canDash && */!isDash && dashStack !=0 && Input.GetKey(KeyCode.K) && !(isGround && dir.y < 0) && !isRoll && !isTranform && !isHeal && !(isInSpecialDash && !isAim) && !((isWallLeft && dir.x == -1) || (isWallRight && dir.x == 1)))// co the dash + an nut + dung duoi dat dash xuong duoi + bam tuong dash vao tuong + ko roll
+        if (canDash && !isDash && dashStack !=0 && Input.GetKeyDown(KeyCode.K) && !(isGround && dir.y < 0) && !isRoll && !isTranform && !isHeal && !(isInSpecialDash && !isAim) && !((isWallLeft && dir.x == -1) || (isWallRight && dir.x == 1)))// co the dash + an nut + dung duoi dat dash xuong duoi + bam tuong dash vao tuong + ko roll
         {
-            //canDash = false;
+            canDash = false;
             isDash = true;
             isJumping = false;
 
@@ -484,9 +532,9 @@ public class CharacterMovement : MonoBehaviour
     }
     public void Dash2()// xem xet viec dash 2 huong
     {
-        if (/*canDash && */!isDash && dashStack != 0 && Input.GetKey(KeyCode.K) && !isRoll && !isTranform && !isHeal && /*(isInSpecialDash && isAim) && */ !((isWallLeft && dir.x == -1) || (isWallRight && dir.x == 1)))// co the dash + an nut + dung duoi dat dash xuong duoi + bam tuong dash vao tuong + ko roll
+        if (canDash && !isDash && dashStack != 0 && Input.GetKeyDown(KeyCode.K) && !isRoll && !isTranform && !isHeal && /*(isInSpecialDash && isAim) && */ !((isWallLeft && dir.x == -1) || (isWallRight && dir.x == 1)))// co the dash + an nut + dung duoi dat dash xuong duoi + bam tuong dash vao tuong + ko roll
         {
-            //canDash = false;
+            canDash = false;
             isDash = true;
             isJumping = false;
 
@@ -993,7 +1041,7 @@ public class CharacterMovement : MonoBehaviour
         ani.runtimeAnimatorController = isLight ? LightAni : DarkAni;
         isTranform = false;
     }
-    public void DashCountdown()
+    public void DashCountdownStack()
     {
         if (dashStack < dashStackMax)
         {
@@ -1005,6 +1053,21 @@ public class CharacterMovement : MonoBehaviour
             {
                 dashCountdownTime = dashCountdown;
                 dashStack++;
+            }
+        }
+    }
+    public void DashCountdownCanDash()
+    {
+        if (!canDash)
+        {
+            if (dashCountdownCanDashTime > 0)
+            {
+                dashCountdownCanDashTime -= Time.deltaTime;
+            }
+            else
+            {
+                dashCountdownCanDashTime = dashCountdownCanDash;
+                canDash = true;
             }
         }
     }

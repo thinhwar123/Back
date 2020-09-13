@@ -19,6 +19,7 @@ public class Gem : MonoBehaviour
     public float speedRotate;
     public float safeRange;
     public GameObject explosionObject;
+    public LayerMask whatIsWeakWall;
 
     public void Start()
     {
@@ -65,6 +66,16 @@ public class Gem : MonoBehaviour
     }
     public void Explosion()
     {
+        RaycastHit2D[] hit = Physics2D.CircleCastAll(transform.position, 2f, Vector2.zero, 0, whatIsWeakWall);
+        Debug.Log(hit.Length);
+        if (hit.Length != 0)
+        {
+            for (int i = 0; i < hit.Length; i++)
+            {
+                hit[i].transform.GetComponent<WeakWall>().Explosion();
+            }
+        }
+        //ani
         GameObject tempObject = Instantiate(explosionObject, transform.position, Quaternion.identity);
         tempObject.GetComponent<Animator>().SetTrigger("fire");
         Destroy(tempObject, 2);
