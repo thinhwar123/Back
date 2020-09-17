@@ -1,9 +1,9 @@
-﻿using Cinemachine.Editor;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
-using UnityEditor.Animations;
+
 using UnityEngine;
 public class CharacterMovement : MonoBehaviour
 {
