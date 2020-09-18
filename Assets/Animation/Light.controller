@@ -141,7 +141,7 @@ AnimatorStateTransition:
   serializedVersion: 3
   m_TransitionDuration: 0
   m_TransitionOffset: 0
-  m_ExitTime: 0
+  m_ExitTime: 0.4
   m_HasExitTime: 1
   m_HasFixedDuration: 0
   m_InterruptionSource: 0
@@ -241,6 +241,9 @@ AnimatorStateTransition:
   - m_ConditionMode: 4
     m_ConditionEvent: velocity.y
     m_EventTreshold: -1
+  - m_ConditionMode: 2
+    m_ConditionEvent: isWallSilde
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -1169228921061035688}
   m_Solo: 0
@@ -1266,10 +1269,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: isWall
-    m_EventTreshold: 0
-  - m_ConditionMode: 4
-    m_ConditionEvent: velocity.y
+    m_ConditionEvent: isWallSilde
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -5728380288259717012}
@@ -1400,10 +1400,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: isWall
-    m_EventTreshold: 0
-  - m_ConditionMode: 4
-    m_ConditionEvent: velocity.y
+    m_ConditionEvent: isWallSilde
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -5728380288259717012}
@@ -1488,7 +1485,7 @@ AnimatorStateTransition:
   serializedVersion: 3
   m_TransitionDuration: 0
   m_TransitionOffset: 0
-  m_ExitTime: 0.3
+  m_ExitTime: 0.4
   m_HasExitTime: 1
   m_HasFixedDuration: 0
   m_InterruptionSource: 0

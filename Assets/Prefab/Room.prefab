@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 2372632982954974492}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 59.209877, y: 36, z: 1}
+  m_LocalScale: {x: 59.20574, y: 36, z: 1}
   m_Children: []
   m_Father: {fileID: 2372632984708828322}
   m_RootOrder: 1
@@ -102,12 +102,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb4b27487873f2345a5b04708877593d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: 0
   cinemachineVirtualCamera: {fileID: 2372632984350216889}
   cinemachineConfiner: {fileID: 2372632984350216891}
   cameraColl: {fileID: 2372632982954974492}
   roomColl: {fileID: 2372632984395696032}
-  isTest: 0
+  cameraSize: 9
   isDebug: 1
   isDrawAll: 0
   isDrawRoom: 1
@@ -142,7 +141,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2372632984350216889}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.919998, y: -2.7400017, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5014315201503863134}
@@ -168,7 +167,7 @@ MonoBehaviour:
   m_Priority: 10
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 0}
-  m_Follow: {fileID: 0}
+  m_Follow: {fileID: 2372632983650232128}
   m_Lens:
     FieldOfView: 40
     OrthographicSize: 6
@@ -347,20 +346,20 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 2372632982954974495}
     m_ColliderPaths:
-    - - X: 296049083
+    - - X: 296028411
         Y: -180000000
-      - X: 296049083
+      - X: 296028411
         Y: 180000000
-      - X: -296049376
+      - X: -296028704
         Y: 179999707
-      - X: -296049083
+      - X: -296028411
         Y: -180000000
   m_CompositePaths:
     m_Paths:
-    - - {x: 29.604881, y: -18}
-      - {x: 29.604881, y: 18}
-      - {x: -29.604939, y: 17.99994}
-      - {x: -29.604881, y: -18}
+    - - {x: 29.602814, y: -18}
+      - {x: 29.602814, y: 18}
+      - {x: -29.60287, y: 17.99994}
+      - {x: -29.602814, y: -18}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005
 --- !u!1 &4764338961176706246
