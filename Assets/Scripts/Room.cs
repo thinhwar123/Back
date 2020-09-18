@@ -11,6 +11,7 @@ public class Room : MonoBehaviour
     public Cinemachine.CinemachineConfiner cinemachineConfiner;
     public GameObject cameraColl;
     public GameObject roomColl;
+    public float cameraSize;
     public bool isDebug;
     public bool isDrawAll;
     public bool isDrawRoom;
@@ -87,7 +88,8 @@ public class Room : MonoBehaviour
     public void StartCamera()
     {
         cinemachineVirtualCamera.GetComponent<CinemachineVirtualCamera>().Follow = GameManager.instance.character.transform;
-        cinemachineVirtualCamera.SetActive(true);        
+        cinemachineVirtualCamera.SetActive(true);
+        cinemachineVirtualCamera.GetComponent<CinemachineVirtualCamera>().m_Lens.OrthographicSize = cameraSize;
     }
     public void StopCamera()
     {
@@ -111,8 +113,10 @@ public class Room : MonoBehaviour
 
     public void OnDrawGizmos()
     {
+
         if (isDebug )
         {
+            cinemachineVirtualCamera.GetComponent<CinemachineVirtualCamera>().m_Lens.OrthographicSize = cameraSize;
             Gizmos.color = Color.red;
 
 
