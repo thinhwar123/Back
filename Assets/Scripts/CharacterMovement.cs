@@ -1,15 +1,16 @@
-﻿using System;
+﻿using Cinemachine.Editor;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using UnityEditor.Animations;
 using UnityEngine;
 public class CharacterMovement : MonoBehaviour
 {
     [Header("CharacterAttribute")]
     public bool isDebug;
     public CharacterEffect characterEffect;
-    public Collider2D standCollider;
-    public Collider2D rollCollider;
+    public Collider2D characterCollider;
     public Rigidbody2D rb;
     public Animator ani;
     public SpriteRenderer spriteRenderer;
@@ -55,7 +56,6 @@ public class CharacterMovement : MonoBehaviour
     public bool isWallJump;
     public Vector2 wallJumpDirection;
     public float wallJumpForce;
-    public float wallJumpForceBack;
     public float wallJumpTime;
     public float wallJumpTimeCounter;
     public bool continueJump;
@@ -196,10 +196,10 @@ public class CharacterMovement : MonoBehaviour
     {
         if (!isJoin)
         {
-            isGround = Physics2D.OverlapBox(feet.position, new Vector2(0.9f, 0.1f), 0, whatIsGround);
-            isWallLeft = Physics2D.OverlapBox(leftHand.position, new Vector2(0.05f, 1.3f), 0, whatIsGround);
-            isWallRight = Physics2D.OverlapBox(rightHand.position, new Vector2(0.05f, 1.3f), 0, whatIsGround);
-            isWall = ((isWallLeft /*&& dir.x < 0*/) || (isWallRight /*&& dir.x > 0*/)) && !isGround;
+            isGround = Physics2D.OverlapBox(feet.position, new Vector2(0.6f, 0.1f), 0, whatIsGround);
+            isWallLeft = Physics2D.OverlapBox(leftHand.position, new Vector2(0.05f, 0.6f), 0, whatIsGround);
+            isWallRight = Physics2D.OverlapBox(rightHand.position, new Vector2(0.05f, 0.6f), 0, whatIsGround);
+            isWall = (isWallLeft || isWallRight) && !isGround;
             isInTheAir = !isWall && !isGround;
             isInGround = Physics2D.OverlapCircle(bodyCharacter.position, 0.1f, whatIsGround);
             if (isInGround)
@@ -325,28 +325,16 @@ public class CharacterMovement : MonoBehaviour
     }
     public void WallSlide()
     {
-        if (isWall && !isWallJump && rb.velocity.y < 0  &&((isWallLeft && dir.x <0) || (isWallRight && dir.x > 0)))
+        if (isWall && !isWallJump && rb.velocity.y < 0 )
         {
             isWallSlide = true;
             rb.gravityScale = 0.1f;
             rb.velocity = Vector2.down * slideForce;
-            //ani
-            ani.SetBool("isWallSilde", true);
-        }
-        else if (isWallSlide && ((isWallLeft) || (isWallRight)) && !isGround && !isDash && !isWallJump)
-        {
-            isWallSlide = true;
-            rb.gravityScale = 0.1f;
-            rb.velocity = Vector2.down * slideForce;
-            //ani
-            ani.SetBool("isWallSilde", true);
         }
         else if (!isDash && !isInSpecialDash)
         {
             isWallSlide = false;
             rb.gravityScale = normalGravity;
-            //ani
-            ani.SetBool("isWallSilde", false);
         }
 
     }
@@ -407,20 +395,16 @@ public class CharacterMovement : MonoBehaviour
         if (continueJump && isInTheAir && dir.x != 0  && !isWallJump)
         {
             continueJump = false;
-            //isSomersault = true;
-            //canSomersault = false;
+            isSomersault = true;
+            canSomersault = false;
 
             rb.velocity = new Vector2(rb.velocity.x, 0);
-            rb.velocity = Vector2.up * wallJumpForceBack;
+            rb.velocity = Vector2.up * somersaultForce;
 
             //ani
             //ani.SetBool("isSomersault", true);
             ani.SetTrigger("somersault");
-            characterEffect.JumpEffect();
-        }
-        else if(continueJump && !isWallJump)
-        {
-            continueJump = false;
+            //characterEffect.JumpEffect();
         }
     }
     public void Somersault()
@@ -687,7 +671,7 @@ public class CharacterMovement : MonoBehaviour
             isSpecialDash = true;
             rb.gravityScale = 0;
 
-            //characterCollider.isTrigger = true;
+            characterCollider.isTrigger = true;
             //ani
             ani.SetTrigger("dash");
             StartCoroutine(characterEffect.SpecialDashEffect());
@@ -720,7 +704,7 @@ public class CharacterMovement : MonoBehaviour
             isInSpecialDash = false;
             specialObjectControll.GetComponent<SpecialObject>().Frezzing(false);
             listSpecialObject = new List<GameObject>();
-            //characterCollider.isTrigger = false;
+            characterCollider.isTrigger = false;
 
             spriteRenderer.color = Color.white;
             gameObject.transform.SetParent(null);                                                    // pha huy object
@@ -763,7 +747,7 @@ public class CharacterMovement : MonoBehaviour
             isJoin = false;
             specialObjectControll.GetComponent<SpecialObject>().Frezzing(false);
 
-            //characterCollider.isTrigger = false;
+            characterCollider.isTrigger = false;
 
             spriteRenderer.color = Color.white;
             gameObject.transform.SetParent(null);                                                    // pha huy object
@@ -877,7 +861,6 @@ public class CharacterMovement : MonoBehaviour
             isRoll = true;
             canRoll = false;
 
-            rollCollider.isTrigger = true;
             rollTimeCounter = rollTime;
             rb.velocity = Vector2.zero;
             rb.velocity = Vector2.left * (spriteRenderer.flipX ? 1 : -1) * rollForce;
@@ -903,7 +886,6 @@ public class CharacterMovement : MonoBehaviour
             if (isRoll)
             {
                 isRoll = false;
-                rollCollider.isTrigger = false;
 
             }
             if (isGround)
