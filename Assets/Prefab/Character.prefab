@@ -5063,7 +5063,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6609313501463836187}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.36, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6609313502736312383}
@@ -10126,7 +10126,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isDebug: 0
   characterEffect: {fileID: 6609313500852736245}
-  characterCollider: {fileID: 6609313501839714212}
+  standCollider: {fileID: 8578367538339330601}
+  rollCollider: {fileID: 6532958468639837516}
   rb: {fileID: 6609313502736312382}
   ani: {fileID: 6609313500852736203}
   spriteRenderer: {fileID: 6609313500852736202}

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3963597833372659854}
   m_Layer: 13
   m_Name: WeakWall
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

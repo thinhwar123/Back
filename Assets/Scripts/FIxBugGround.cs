@@ -2,20 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FIxBugGround : MonoBehaviour
+public class FixBugGround : MonoBehaviour
 {
+    public bool canStand = true;
+    //public void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.CompareTag("Ground"))
+    //    {
+    //        canStand = false;
+    //    }
+    //}
+    //public void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    if (collision.CompareTag("Ground"))
+    //    {
+    //        canStand = true;
+    //    }
+    //}
     public void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.CompareTag("Ground"))
         {
-            GetComponentInParent<Transform>().position += Vector3.up;
+            canStand = true;
         }
-    }
-    public void OnCollisionStay2D(Collision2D collision)
-    {
-        if (collision.transform.CompareTag("Ground"))
+        else
         {
-            GetComponentInParent<Transform>().position += Vector3.up;
+            canStand = false;
         }
     }
 }

@@ -8,7 +8,7 @@ public class CharacterMovement : MonoBehaviour
     [Header("CharacterAttribute")]
     public bool isDebug;
     public CharacterEffect characterEffect;
-    public Collider2D standCollider;
+    public BoxCollider2D standCollider;
     public Collider2D rollCollider;
     public Rigidbody2D rb;
     public Animator ani;
@@ -82,6 +82,7 @@ public class CharacterMovement : MonoBehaviour
 
     [Header("RollAttribute")]
     public bool canRoll;
+    public bool canStand;
     public bool isRoll;
     public float rollForce;
     public float rollTime;
@@ -201,11 +202,7 @@ public class CharacterMovement : MonoBehaviour
             isWallRight = Physics2D.OverlapBox(rightHand.position, new Vector2(0.05f, 1.3f), 0, whatIsGround);
             isWall = ((isWallLeft /*&& dir.x < 0*/) || (isWallRight /*&& dir.x > 0*/)) && !isGround;
             isInTheAir = !isWall && !isGround;
-            isInGround = Physics2D.OverlapCircle(bodyCharacter.position, 0.1f, whatIsGround);
-            if (isInGround)
-            {
-                transform.position += Vector3.up;
-            }
+            canStand = !Physics2D.OverlapCircle(bodyCharacter.position, 0.1f, whatIsGround);
             //ani
             ani.SetBool("isGround", isGround);
             ani.SetBool("isWall", isWall);
@@ -218,28 +215,32 @@ public class CharacterMovement : MonoBehaviour
     public void Flip()
     {
         bool tempFlipX = spriteRenderer.flipX;
-        if (!isWall )
+        if (!isRoll && !isDash)
         {
-            if (dir.x > 0)
+            if (!isWallSlide)
             {
-                spriteRenderer.flipX = false;
+                if (dir.x > 0)
+                {
+                    spriteRenderer.flipX = false;
+                }
+                else if (dir.x < 0)
+                {
+                    spriteRenderer.flipX = true;
+                }
             }
-            else if (dir.x < 0)
+            else if (isWallSlide)
             {
-                spriteRenderer.flipX = true;
+                if (isWallLeft && rb.velocity.y < 0)
+                {
+                    spriteRenderer.flipX = false;
+                }
+                else if (isWallRight && rb.velocity.y < 0)
+                {
+                    spriteRenderer.flipX = true;
+                }
             }
         }
-        else if(isWall )
-        {
-            if (isWallLeft && rb.velocity.y < 0)
-            {
-                spriteRenderer.flipX = false;
-            }
-            else if (isWallRight && rb.velocity.y < 0)
-            {
-                spriteRenderer.flipX = true;
-            }
-        }
+
         FixGemPointPosition();
     }
     public void Run()
@@ -526,7 +527,7 @@ public class CharacterMovement : MonoBehaviour
                 ani.SetTrigger("endDash");
             }
         }
-        else if (dashTimeCounter < 0)
+        else if (dashTimeCounter < 0 )
         {
             if (isDash)
             {
@@ -872,12 +873,12 @@ public class CharacterMovement : MonoBehaviour
     }
     public void Roll()
     {
-        if (canRoll && isGround && Input.GetKeyDown(KeyCode.L) && !isDash && !isTranform && !isHeal && !isInSpecialDash && !(isWallLeft && dir.x == -1) && !(isWallRight && dir.x == 1) && !(isWallLeft && spriteRenderer.flipX) && !(isWallRight && !spriteRenderer.flipX))
+        if (canRoll && isGround && Input.GetKeyDown(KeyCode.L) && !isDash && !isTranform && !isHeal && !isInSpecialDash /*&& !(isWallLeft && dir.x == -1) && !(isWallRight && dir.x == 1) && !(isWallLeft && spriteRenderer.flipX) && !(isWallRight && !spriteRenderer.flipX)*/)
         {
             isRoll = true;
             canRoll = false;
 
-            rollCollider.isTrigger = true;
+            standCollider.isTrigger = true;
             rollTimeCounter = rollTime;
             rb.velocity = Vector2.zero;
             rb.velocity = Vector2.left * (spriteRenderer.flipX ? 1 : -1) * rollForce;
@@ -890,7 +891,7 @@ public class CharacterMovement : MonoBehaviour
         else if (rollTimeCounter >= 0)
         {
             rollTimeCounter -= Time.deltaTime;
-            if (isWallLeft || isWallRight || isJumping)
+            if (/*isWallLeft || isWallRight ||*/ isJumping)
             {
                 isRoll = false;
                 rollTimeCounter = -1;
@@ -898,12 +899,12 @@ public class CharacterMovement : MonoBehaviour
 
             }
         }
-        else if (rollTimeCounter < 0)
+        else if (rollTimeCounter < 0 && canStand)
         {
             if (isRoll)
             {
                 isRoll = false;
-                rollCollider.isTrigger = false;
+                standCollider.isTrigger = false;
 
             }
             if (isGround)
