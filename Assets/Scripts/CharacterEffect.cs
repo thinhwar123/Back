@@ -36,11 +36,11 @@ public class CharacterEffect : MonoBehaviour
     {
         if (characterMovement.isWallLeft)
         {
-            transform.parent.transform.localPosition = new Vector3(-0.1f, 0, 0);
+            transform.parent.transform.localPosition = new Vector3(-0.2f, 0, 0);
         }
         else if (characterMovement.isWallRight)
         {
-            transform.parent.transform.localPosition = new Vector3(0.1f, 0, 0);
+            transform.parent.transform.localPosition = new Vector3(0.2f, 0, 0);
         }
     }
     public void resetDirection()

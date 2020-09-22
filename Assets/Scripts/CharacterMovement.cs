@@ -26,7 +26,7 @@ public class CharacterMovement : MonoBehaviour
     public float normalGravity;
     public bool isWallLeft;
     public bool isWallRight;
-    public bool isWall;
+    public bool isWallAround;
     public bool isGround;
     public bool isInTheAir;
     public bool isInGround;
@@ -197,15 +197,15 @@ public class CharacterMovement : MonoBehaviour
     {
         if (!isJoin)
         {
-            isGround = Physics2D.OverlapBox(feet.position, new Vector2(0.9f, 0.1f), 0, whatIsGround);
-            isWallLeft = Physics2D.OverlapBox(leftHand.position, new Vector2(0.05f, 1.3f), 0, whatIsGround);
-            isWallRight = Physics2D.OverlapBox(rightHand.position, new Vector2(0.05f, 1.3f), 0, whatIsGround);
-            isWall = ((isWallLeft /*&& dir.x < 0*/) || (isWallRight /*&& dir.x > 0*/)) && !isGround;
-            isInTheAir = !isWall && !isGround;
+            isGround = Physics2D.OverlapBox(feet.position, new Vector2(1.35f, 0.1f), 0, whatIsGround);
+            isWallLeft = Physics2D.OverlapBox(leftHand.position, new Vector2(0.1f, 1.9f), 0, whatIsGround);
+            isWallRight = Physics2D.OverlapBox(rightHand.position, new Vector2(0.1f, 1.9f), 0, whatIsGround);
+            isWallAround = ((isWallLeft /*&& dir.x < 0*/) || (isWallRight /*&& dir.x > 0*/)) && !isGround;
+            isInTheAir = !isWallSlide && !isGround;
             canStand = !Physics2D.OverlapCircle(bodyCharacter.position, 0.1f, whatIsGround);
             //ani
             ani.SetBool("isGround", isGround);
-            ani.SetBool("isWall", isWall);
+            ani.SetBool("isWall", isWallAround);
             ani.SetBool("isInTheAir", isInTheAir);
             ani.SetFloat("velocity.x", rb.velocity.x);
             ani.SetFloat("velocity.y", rb.velocity.y);
@@ -326,7 +326,7 @@ public class CharacterMovement : MonoBehaviour
     }
     public void WallSlide()
     {
-        if (isWall && !isWallJump && rb.velocity.y < 0  &&((isWallLeft && dir.x <0) || (isWallRight && dir.x > 0)))
+        if (isWallAround && !isWallJump && (!Input.GetKey(KeyCode.J) || rb.velocity.y < 0)  &&((isWallLeft && dir.x <0) || (isWallRight && dir.x > 0)))
         {
             isWallSlide = true;
             rb.gravityScale = 0.1f;
@@ -353,7 +353,7 @@ public class CharacterMovement : MonoBehaviour
     }
     public void WallJump()
     {
-        if (isWall && Input.GetKeyDown(KeyCode.J) && !isWallJump)
+        if (isWallAround && Input.GetKeyDown(KeyCode.J) && !isWallJump)
         {
             isWallJump = true;
             wallJumpTimeCounter = wallJumpTime;
@@ -382,7 +382,7 @@ public class CharacterMovement : MonoBehaviour
     }
     public void WallJump1()
     {
-        if (isWall && Input.GetKeyDown(KeyCode.J) && !isWallJump)
+        if (isWallSlide && Input.GetKeyDown(KeyCode.J) && !isWallJump)
         {
             isWallJump = true;
             continueJump = true;
@@ -426,7 +426,7 @@ public class CharacterMovement : MonoBehaviour
     }
     public void Somersault()
     {
-        if ((isGround || isWall) && !isDash)
+        if ((isGround || isWallSlide) && !isDash)
         {
             canSomersault = true;
             isSomersault = false;
@@ -471,13 +471,13 @@ public class CharacterMovement : MonoBehaviour
                 dashStack--;
                 rb.velocity = new Vector2((spriteRenderer.flipX ? -1 : 1), dir.y).normalized * dashForce;
             }
-            else if (dir.x != 0 || (!isWall && dir.y != 0))
+            else if (dir.x != 0 || (!isWallAround && dir.y != 0))
             {
                 rb.velocity = Vector2.zero;
                 dashStack--;
                 rb.velocity = dir.normalized * dashForce;
             }
-            else if(isWall && dir.y > 0)
+            else if(isWallAround && dir.y > 0)
             {
                 rb.velocity = Vector2.zero;
                 dashStack--;
@@ -541,7 +541,7 @@ public class CharacterMovement : MonoBehaviour
                 //ani
                 ani.SetTrigger("endDash");
             }            
-            if (isWall || isGround)
+            if (isWallAround || isGround)
             {
                 ////canDash = true;
             }
@@ -567,13 +567,13 @@ public class CharacterMovement : MonoBehaviour
                 dashStack--;
                 rb.velocity = new Vector2((spriteRenderer.flipX ? -1 : 1), 0).normalized * dashForce;
             }
-            else if (dir.x != 0 || (!isWall && dir.y != 0))
+            else if (dir.x != 0 || (!isWallAround && dir.y != 0))
             {
                 rb.velocity = Vector2.zero;
                 dashStack--;
                 rb.velocity = new Vector2(dir.x, 0).normalized * dashForce;
             }
-            else if (isWall && dir.y > 0)
+            else if (isWallAround && dir.y > 0)
             {
                 rb.velocity = Vector2.zero;
                 dashStack--;
@@ -627,7 +627,7 @@ public class CharacterMovement : MonoBehaviour
                 //ani
                 ani.SetTrigger("endDash");
             }
-            if (isWall || isGround)
+            if (isWallAround || isGround)
             {
                 //canDash = true;
             }
@@ -954,7 +954,7 @@ public class CharacterMovement : MonoBehaviour
         else if (attackTimeCounter >= 0)
         {
             attackTimeCounter -= Time.deltaTime;
-            if (isWall)
+            if (isWallAround)
             {
                 canAttack = true;
                 isAttack = false;
