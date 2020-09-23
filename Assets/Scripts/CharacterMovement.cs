@@ -64,6 +64,8 @@ public class CharacterMovement : MonoBehaviour
     public bool canSomersault;
     public bool isSomersault;
     public float somersaultForce;
+    public float somersaultTime;
+    public float somersaultTimeCounter;
 
     [Header("DashAttribute")]
     public bool canDash;
@@ -84,6 +86,7 @@ public class CharacterMovement : MonoBehaviour
     public bool canRoll;
     public bool canStand;
     public bool isRoll;
+    public float rangeRoll;
     public float rollForce;
     public float rollTime;
     public float rollTimeCounter;
@@ -202,7 +205,7 @@ public class CharacterMovement : MonoBehaviour
             isWallRight = Physics2D.OverlapBox(rightHand.position, new Vector2(0.1f, 1.9f), 0, whatIsGround);
             isWallAround = ((isWallLeft /*&& dir.x < 0*/) || (isWallRight /*&& dir.x > 0*/)) && !isGround;
             isInTheAir = !isWallSlide && !isGround;
-            canStand = !Physics2D.OverlapCircle(bodyCharacter.position, 0.1f, whatIsGround);
+            canStand = !Physics2D.OverlapBox(bodyCharacter.position + Vector3.left * (spriteRenderer.flipX ? 1 : -1) * rangeRoll,new Vector2(1.4f, 1.8f), 0, whatIsGround);
             //ani
             ani.SetBool("isGround", isGround);
             ani.SetBool("isWall", isWallAround);
@@ -429,8 +432,6 @@ public class CharacterMovement : MonoBehaviour
         if ((isGround || isWallSlide) && !isDash)
         {
             canSomersault = true;
-            isSomersault = false;
-
             //ani
             //ani.SetBool("isSomersault", false);
 
@@ -440,6 +441,7 @@ public class CharacterMovement : MonoBehaviour
         {
             isSomersault = true;
             canSomersault = false;
+            somersaultTimeCounter = somersaultTime;
 
             rb.velocity = new Vector2(rb.velocity.x, 0);
             rb.velocity = Vector2.up * somersaultForce;
@@ -448,6 +450,28 @@ public class CharacterMovement : MonoBehaviour
             //ani.SetBool("isSomersault", true);
             ani.SetTrigger("somersault");
             characterEffect.JumpEffect();
+        }
+        if (Input.GetKey(KeyCode.J) && isSomersault)
+        {
+            if (somersaultTimeCounter > 0)
+            {
+                rb.velocity = Vector2.up * somersaultForce;
+                somersaultTimeCounter -= Time.deltaTime;
+            }
+            else
+            {
+                isSomersault = false;
+
+                //ani
+                //ani.SetBool("isJump", false);
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.J))
+        {
+            isSomersault = false;
+
+            //ani
+            //ani.SetBool("isJump", false);
         }
     }
     public void Dash8() // xem xet viec co nen can bang vector dash ve 1 khi dash ko
@@ -878,7 +902,10 @@ public class CharacterMovement : MonoBehaviour
             isRoll = true;
             canRoll = false;
 
-            standCollider.isTrigger = true;
+            if (canStand)
+            {
+                standCollider.isTrigger = true;
+            }
             rollTimeCounter = rollTime;
             rb.velocity = Vector2.zero;
             rb.velocity = Vector2.left * (spriteRenderer.flipX ? 1 : -1) * rollForce;
@@ -899,7 +926,7 @@ public class CharacterMovement : MonoBehaviour
 
             }
         }
-        else if (rollTimeCounter < 0 && canStand)
+        else if (rollTimeCounter < 0)
         {
             if (isRoll)
             {

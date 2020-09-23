@@ -202,6 +202,8 @@ MonoBehaviour:
   canSomersault: 1
   isSomersault: 0
   somersaultForce: 15
+  somersaultTime: 0
+  somersaultTimeCounter: 0
   canDash: 0
   isDash: 0
   dashForce: 20
@@ -217,6 +219,7 @@ MonoBehaviour:
   canRoll: 0
   canStand: 0
   isRoll: 0
+  rangeRoll: 0
   rollForce: 12
   rollTime: 0.3
   rollTimeCounter: 0
@@ -791,7 +794,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &245036688
 Transform:
   m_ObjectHideFlags: 0
@@ -20479,6 +20482,11 @@ PrefabInstance:
         type: 3}
       propertyPath: gemPointPosition.y
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6609313502736312377, guid: 264b5de2e3a05f144bcf4b8dc2f86950,
+        type: 3}
+      propertyPath: rangeRoll
+      value: 6.24
       objectReference: {fileID: 0}
     - target: {fileID: 6609313502736312380, guid: 264b5de2e3a05f144bcf4b8dc2f86950,
         type: 3}
