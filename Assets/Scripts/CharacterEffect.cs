@@ -4,31 +4,31 @@ using UnityEngine;
 using DG.Tweening;
 public class CharacterEffect : MonoBehaviour
 {
-    public CharacterMovement characterMovement;
+    [SerializeField] private CharacterMovement characterMovement;
     [Header("Jump")]
-    public ParticleSystem jumpEffect;
-    public ParticleSystem healingEffect;
+    [SerializeField] private ParticleSystem jumpEffect;
+    [SerializeField] private ParticleSystem healingEffect;
 
     [Header("Dash")]
-    public GameObject dashEffect;
-    public float timeDashSpawnStart;
-    public float timeDashSpawnCounter;
-    public float timeDashFade;
-    public float dashFadeValue;
+    [SerializeField] private GameObject dashEffect;
+    [SerializeField] private float timeDashSpawnStart;
+    [SerializeField] private float timeDashSpawnCounter;
+    [SerializeField] private float timeDashFade;
+    [SerializeField] private float dashFadeValue;
 
     [Header("SpecialDash")]
-    public GameObject specialDashEffect;
-    public float timeSpecialDashSpawnStart;
-    public float timeSpecialDashSpawnCounter;
-    public float timeSpecialDashFade;
-    public float specialDashFadeValue;
+    [SerializeField] private GameObject specialDashEffect;
+    [SerializeField] private float timeSpecialDashSpawnStart;
+    [SerializeField] private float timeSpecialDashSpawnCounter;
+    [SerializeField] private float timeSpecialDashFade;
+    [SerializeField] private float specialDashFadeValue;
 
     [Header("Roll")]
-    public GameObject rollEffect;
-    public float timeRollSpawnStart;
-    public float timeRollSpawnCounter;
-    public float timeRollFade;
-    public float rollFadeValue;
+    [SerializeField] private GameObject rollEffect;
+    [SerializeField] private float timeRollSpawnStart;
+    [SerializeField] private float timeRollSpawnCounter;
+    [SerializeField] private float timeRollFade;
+    [SerializeField] private float rollFadeValue;
 
     [Header("ChangeForm")]
     public Animator changeFormAni;

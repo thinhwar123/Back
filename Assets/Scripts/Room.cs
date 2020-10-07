@@ -7,18 +7,18 @@ using UnityEngine.UIElements;
 
 public class Room : MonoBehaviour
 {
-    public GameObject cinemachineVirtualCamera;
-    public Cinemachine.CinemachineConfiner cinemachineConfiner;
-    public GameObject cameraColl;
-    public GameObject roomColl;
-    public float cameraSize;
-    public bool isDebug;
-    public bool isDrawAll;
-    public bool isDrawRoom;
-    public bool lockLeft;
-    public bool lockRight;
-    public bool lockUp;
-    public bool lockDown;
+    [SerializeField] private GameObject cinemachineVirtualCamera;
+    [SerializeField] private Cinemachine.CinemachineConfiner cinemachineConfiner;
+    [SerializeField] private GameObject cameraColl;
+    [SerializeField] private GameObject roomColl;
+    [SerializeField] private float cameraSize;
+    [SerializeField] private bool isDebug;
+    [SerializeField] private bool isDrawAll;
+    [SerializeField] private bool isDrawRoom;
+    [SerializeField] private bool lockLeft;
+    [SerializeField] private bool lockRight;
+    [SerializeField] private bool lockUp;
+    [SerializeField] private bool lockDown;
     private Vector2 fixPosition;
     private Vector2 fixRange;
 

@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public Rigidbody2D rb;
-    public Animator ani;
-    public SpriteRenderer spriteRenderer;
-    public EnemyStatus enemyStatus;
-    public GameObject character;
-    public float rangeAttack;
-    public float attackSpeed;
-    public float attackSpeedCounter;
-    public float speedWalk;
+    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Animator ani;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] public EnemyStatus enemyStatus;
+    [SerializeField] private GameObject character;
+    [SerializeField] private float rangeAttack;
+    [SerializeField] private float attackSpeed;
+    [SerializeField] private float attackSpeedCounter;
+    [SerializeField] private float speedWalk;
     public Vector2 dir;
     [Header("demoAttribute")]
     public float rangeFindCharacter;

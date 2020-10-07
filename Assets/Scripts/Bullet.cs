@@ -5,11 +5,7 @@ using DG.Tweening;
 
 public class Bullet : MonoBehaviour
 {
-    public Tween tween;
-    public void Update()
-    {
-        
-    }
+    [SerializeField] private Tween tween;
     public void Fire(int dir, float speed)
     {
         tween = transform.DOMoveX(transform.position.x + dir, 1 / speed).SetLoops(-1, LoopType.Incremental);
