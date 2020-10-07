@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class SpecialObject : MonoBehaviour
 {
-    public Enemy enemyCharacter;
-    public bool isEnemy;
-    public Animator ani;
-    public Rigidbody2D rb;
-    public bool isAim;
-    public GameObject specialObjectColl;
-    public GameObject crossHair;
-    public GameObject tempCrossHair;
+    [SerializeField] private Enemy enemyCharacter;
+    [SerializeField] private bool isEnemy;
+    [SerializeField] private Animator ani;
+    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private bool isAim;
+    [SerializeField] private GameObject specialObjectColl;
+    [SerializeField] private GameObject crossHair;
+    [SerializeField] private GameObject tempCrossHair;
     public void BeControlled()
     {
         StopTarget();

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class SpawnGameObject : MonoBehaviour
 {
-    public GameObject spwanGameObject;
-    public float delayTime;
+    [SerializeField] private GameObject spwanGameObject;
+    [SerializeField] private float delayTime;
     void Start()
     {
         StartCoroutine(AutoSpawnGameObject());

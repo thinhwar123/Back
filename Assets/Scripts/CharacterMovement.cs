@@ -6,148 +6,148 @@ using UnityEngine;
 public class CharacterMovement : MonoBehaviour
 {
     [Header("CharacterAttribute")]
-    public bool isDebug;
-    public CharacterEffect characterEffect;
-    public BoxCollider2D standCollider;
-    public Collider2D rollCollider;
-    public Rigidbody2D rb;
-    public Animator ani;
-    public SpriteRenderer spriteRenderer;
-    public Transform leftHand;
-    public Transform rightHand;
-    public Transform feet;
-    public Transform bodyCharacter;
-    public Gem gemObject;
-    public Transform gemPoint;
-    public Vector2 gemPointPosition;
-    public LayerMask whatIsGround;
-    public LayerMask whatIsSpecialObject;
-    public LayerMask whatIsRoom;
-    public float normalGravity;
-    public bool isWallLeft;
-    public bool isWallRight;
-    public bool isWallAround;
-    public bool isGround;
-    public bool isInTheAir;
-    public bool isInGround;
+    [SerializeField] private bool isDebug;
+    [SerializeField] private CharacterEffect characterEffect;
+    [SerializeField] private BoxCollider2D standCollider;
+    [SerializeField] private Collider2D rollCollider;
+    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Animator ani;
+    [SerializeField] public SpriteRenderer spriteRenderer;
+    [SerializeField] private Transform leftHand;
+    [SerializeField] private Transform rightHand;
+    [SerializeField] private Transform feet;
+    [SerializeField] private Transform bodyCharacter;
+    [SerializeField] private Gem gemObject;
+    [SerializeField] private Transform gemPoint;
+    [SerializeField] private Vector2 gemPointPosition;
+    [SerializeField] private LayerMask whatIsGround;
+    [SerializeField] private LayerMask whatIsSpecialObject;
+    [SerializeField] private LayerMask whatIsRoom;
+    [SerializeField] private float normalGravity;
+    [SerializeField] public bool isWallLeft;
+    [SerializeField] public bool isWallRight;
+    [SerializeField] private bool isWallAround;
+    [SerializeField] private bool isGround;
+    [SerializeField] private bool isInTheAir;
+    [SerializeField] private bool isInGround;
 
     [Header("FindRoomAttribute")]
-    public Room currentRoom;
+    [SerializeField] private Room currentRoom;
 
     [Header("RunAttribute")]
-    public float runSpeed;
-    public Vector2 dir;
+    [SerializeField] private float runSpeed;
+    [SerializeField] private Vector2 dir;
 
     [Header("JumpAttribute")]
-    public bool isJumping;
-    public float jumpForce;
-    public float jumpTime;
-    public float jumpTimeCounter;
-    public float fallMultiplier = 2.5f;
-    public float lowJumpMultiplier = 2.0f;
+    [SerializeField] private bool isJumping;
+    [SerializeField] private float jumpForce;
+    [SerializeField] private float jumpTime;
+    [SerializeField] private float jumpTimeCounter;
+    [SerializeField] private float fallMultiplier = 2.5f;
+    [SerializeField] private float lowJumpMultiplier = 2.0f;
 
     [Header("WallSlideAttribute")]
-    public bool isWallSlide;
-    public float slideForce;
+    [SerializeField] private bool isWallSlide;
+    [SerializeField] private float slideForce;
 
 
     [Header("WallJumpAttribute")]
-    public bool isWallJump;
-    public Vector2 wallJumpDirection;
-    public float wallJumpForce;
-    public float wallJumpForceBack;
-    public float wallJumpTime;
-    public float wallJumpTimeCounter;
-    public bool continueJump;
+    [SerializeField] private bool isWallJump;
+    [SerializeField] private Vector2 wallJumpDirection;
+    [SerializeField] private float wallJumpForce;
+    [SerializeField] private float wallJumpForceBack;
+    [SerializeField] private float wallJumpTime;
+    [SerializeField] private float wallJumpTimeCounter;
+    [SerializeField] private bool continueJump;
 
     [Header("SomersaultAttribute")]
-    public bool canSomersault;
-    public bool isSomersault;
-    public float somersaultForce;
-    public float somersaultTime;
-    public float somersaultTimeCounter;
+    [SerializeField] private bool canSomersault;
+    [SerializeField] private bool isSomersault;
+    [SerializeField] private float somersaultForce;
+    [SerializeField] private float somersaultTime;
+    [SerializeField] private float somersaultTimeCounter;
 
     [Header("DashAttribute")]
-    public bool canDash;
-    public bool isDash;
-    public float dashForce;
-    public float dashTime;
-    public float dashTimeCounter;
-    public bool tempCanSomersault;
+    [SerializeField] private bool canDash;
+    [SerializeField] public bool isDash;
+    [SerializeField] private float dashForce;
+    [SerializeField] private float dashTime;
+    [SerializeField] private float dashTimeCounter;
+    [SerializeField] private bool tempCanSomersault;
 
-    public int dashStackMax;
-    public int dashStack;
-    public float dashCountdown;
-    public float dashCountdownTime;
-    public float dashCountdownCanDash;
-    public float dashCountdownCanDashTime;
+    [SerializeField] private int dashStackMax;
+    [SerializeField] private int dashStack;
+    [SerializeField] private float dashCountdown;
+    [SerializeField] private float dashCountdownTime;
+    [SerializeField] private float dashCountdownCanDash;
+    [SerializeField] private float dashCountdownCanDashTime;
 
     [Header("RollAttribute")]
-    public bool canRoll;
-    public bool canStand;
-    public bool isRoll;
-    public float rangeRoll;
-    public float rollForce;
-    public float rollTime;
-    public float rollTimeCounter;
+    [SerializeField] private bool canRoll;
+    [SerializeField] private bool canStand;
+    [SerializeField] public bool isRoll;
+    [SerializeField] private float rangeRoll;
+    [SerializeField] private float rollForce;
+    [SerializeField] private float rollTime;
+    [SerializeField] private float rollTimeCounter;
 
     [Header("SpecialDashAttribute")]
-    public bool isInSpecialDash;
-    public bool isAim;
-    public bool isAimRun;
-    public bool canSpecialDash;
-    public bool isSpecialDash;
-    public bool isJoin;
-    public bool canFindObjectWhileRun;  // bien de tao khoang cach giua cac lan quet
-    public bool delayTimeFind;
-    public float specialDashForce;
-    public float specialDashRange;
-    public List<GameObject> listSpecialObject;
-    public int indexListObject;
-    public float timeSwitchObject; 
-    public float timeSwitchObjectCounter;
-    public GameObject tempCrossHair;
-    public GameObject tempSpecialObject;
-    public GameObject specialObjectAim;
-    public GameObject specialObjectControll;
-    public GameObject crossHair;
-    public float joinTime;
-    public float joinTimeCounter;
+    [SerializeField] public bool isInSpecialDash;
+    [SerializeField] private bool isAim;
+    [SerializeField] private bool isAimRun;
+    [SerializeField] private bool canSpecialDash;
+    [SerializeField] public bool isSpecialDash;
+    [SerializeField] public bool isJoin;
+    [SerializeField] private bool canFindObjectWhileRun;  // bien de tao khoang cach giua cac lan quet
+    [SerializeField] private bool delayTimeFind;
+    [SerializeField] private float specialDashForce;
+    [SerializeField] private float specialDashRange;
+    [SerializeField] private List<GameObject> listSpecialObject;
+    [SerializeField] private int indexListObject;
+    [SerializeField] private float timeSwitchObject;
+    [SerializeField] private float timeSwitchObjectCounter;
+    [SerializeField] private GameObject tempCrossHair;
+    [SerializeField] private GameObject tempSpecialObject;
+    [SerializeField] private GameObject specialObjectAim;
+    [SerializeField] private GameObject specialObjectControll;
+    [SerializeField] private GameObject crossHair;
+    [SerializeField] private float joinTime;
+    [SerializeField] private float joinTimeCounter;
 
     [Header("AttackAttribute")]
-    public bool canAttack;
-    public bool isAttack;
-    public float attatckTime;
-    public float attackTimeCounter;
+    [SerializeField] private bool canAttack;
+    [SerializeField] private bool isAttack;
+    [SerializeField] private float attatckTime;
+    [SerializeField] private float attackTimeCounter;
 
     [Header("HealAndSkillAttribute")]
-    public bool isHeal;
-    public bool isSkill;
-    public GameObject bulletObject;
-    public float bulletSpeed;
+    [SerializeField] private bool isHeal;
+    [SerializeField] private bool isSkill;
+    [SerializeField] private GameObject bulletObject;
+    [SerializeField] private float bulletSpeed;
 
 
-    public float minimumHeldDuration = 0.25f;
-    public float pressTime;
-    public bool isHeldKey;
+    [SerializeField] private float minimumHeldDuration = 0.25f;
+    [SerializeField] private float pressTime;
+    [SerializeField] private bool isHeldKey;
 
 
 
     [Header("TranformAttribute")]
-    public bool isLight;
-    public RuntimeAnimatorController LightAni;
-    public RuntimeAnimatorController DarkAni;
-    public bool isTranform;
+    [SerializeField] public bool isLight;
+    [SerializeField] private RuntimeAnimatorController LightAni;
+    [SerializeField] private RuntimeAnimatorController DarkAni;
+    [SerializeField] private bool isTranform;
     //public bool isFastTranform;
     //public float timeTranform;
 
-    public bool canNormalTranform;
-    public float normalTranformCountdown;
-    public float normalTranformCountdownTime;
+    [SerializeField] private bool canNormalTranform;
+    [SerializeField] private float normalTranformCountdown;
+    [SerializeField] private float normalTranformCountdownTime;
 
-    public bool canQuickTranform;
-    public float quickTranformCountdown;
-    public float quickTranformCountdownTime;
+    [SerializeField] private bool canQuickTranform;
+    [SerializeField] private float quickTranformCountdown;
+    [SerializeField] private float quickTranformCountdownTime;
 
     // Start is called before the first frame update
     void Start()

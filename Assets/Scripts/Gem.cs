@@ -8,18 +8,19 @@ using UnityEngine.UIElements;
 
 public class Gem : MonoBehaviour
 {
-    public GameObject gemPoint;
-    public SpriteRenderer sprite;
-    public Rigidbody2D rb;
-    public bool isLightUp;
-    public GameObject gemLight;
-    public float speedChangeLight;
-    public float movementSpeed;
-    public float accelerator;
-    public float speedRotate;
-    public float safeRange;
-    public GameObject explosionObject;
-    public LayerMask whatIsWeakWall;
+    [SerializeField] private GameObject gemPoint;
+    [SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] public bool isLightUp;
+    [SerializeField] private GameObject gemLight;
+    [SerializeField] private float speedChangeLight;
+    [SerializeField] private float movementSpeed;
+    [SerializeField] private float accelerator;
+    [SerializeField] private float speedRotate;
+    [SerializeField] private float safeRange;
+    [SerializeField] private GameObject explosionObject;
+    [SerializeField] private LayerMask whatIsWeakWall;
+    [SerializeField] private LayerMask whatIsRock;
 
     public void Start()
     {
@@ -66,13 +67,20 @@ public class Gem : MonoBehaviour
     }
     public void Explosion()
     {
-        RaycastHit2D[] hit = Physics2D.CircleCastAll(transform.position, 2f, Vector2.zero, 0, whatIsWeakWall);
-        Debug.Log(hit.Length);
-        if (hit.Length != 0)
+        RaycastHit2D[] hitWeakWall = Physics2D.CircleCastAll(transform.position, 3f, Vector2.zero, 0, whatIsWeakWall);
+        if (hitWeakWall.Length != 0)
         {
-            for (int i = 0; i < hit.Length; i++)
+            for (int i = 0; i < hitWeakWall.Length; i++)
             {
-                hit[i].transform.GetComponent<WeakWall>().Explosion();
+                hitWeakWall[i].transform.GetComponent<WeakWall>().Explosion();
+            }
+        }
+        RaycastHit2D[] hitRock = Physics2D.CircleCastAll(transform.position, 3f, Vector2.zero, 0, whatIsRock);
+        if (hitRock.Length != 0)
+        {
+            for (int i = 0; i < hitRock.Length; i++)
+            {
+                hitRock[i].transform.GetComponent<Rock>().Slide(new Vector2(hitRock[i].transform.position.x - transform.position.x, 0).normalized);
             }
         }
         //ani

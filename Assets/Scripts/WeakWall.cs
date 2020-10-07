@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 public class WeakWall : MonoBehaviour
 {
-    public GameObject explosionObject;
+    [SerializeField] private GameObject explosionObject;
     public void Explosion()
     {
         GameObject tempObject = Instantiate(explosionObject, transform.position, Quaternion.identity);
