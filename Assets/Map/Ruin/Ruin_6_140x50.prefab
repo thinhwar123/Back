@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5128573130008146332}
   - component: {fileID: 2130827435926181949}
   m_Layer: 0
-  m_Name: Ruin_6
+  m_Name: Ruin_6_140x50
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4226838599882289621}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 280, y: 44, z: -4.8984375}
+  m_LocalPosition: {x: 155, y: 105, z: -4.8984375}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6494280874107744706}
